@@ -51,7 +51,7 @@ export interface XRPCRequest {
 	headers: Headers;
 	params: Record<string, unknown>;
 	encoding?: string;
-	input?: Blob | ArrayBufferView | Record<string, unknown>;
+	data?: Blob | ArrayBufferView | Record<string, unknown>;
 	signal?: AbortSignal;
 }
 
@@ -191,7 +191,7 @@ export class XRPC<Queries, Procedures> {
 
 /** Fetch handler */
 export const fetchHandler: XRPCFetch = async (
-	{ service, type, nsid, headers, params, encoding, input, signal },
+	{ service, type, nsid, headers, params, encoding, data: input, signal },
 ) => {
 	const uri = new URL(`/xrpc/${nsid}`, service);
 	const searchParams = uri.searchParams;
@@ -218,7 +218,7 @@ export const fetchHandler: XRPCFetch = async (
 		signal: signal,
 		method: isProcedure ? 'POST' : 'GET',
 		headers: encoding || isJson ? { ...headers, 'Content-Type': encoding || 'application/json' } : headers,
-		body: isJson ? JSON.stringify(input) : input,
+		body: isJson ? JSON.stringify(input) : (input as Blob | ArrayBufferView | undefined),
 	});
 
 	const responseHeaders = response.headers;
