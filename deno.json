@@ -17,10 +17,10 @@
 		"indentWidth": 2,
 		"lineWidth": 110,
 		"semiColons": true,
-		"singleQuote": true,
-		"exclude": ["npm/"]
+		"singleQuote": true
 	},
 	"publish": {
 		"include": ["lib/", "deno.json", "CHANGELOG.md", "README.md", "LICENSE"]
-	}
+	},
+	"exclude": ["npm/"]
 }
