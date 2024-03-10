@@ -113,7 +113,7 @@ export class BskyAuth {
 				service: session.pdsUri || req.service,
 				headers: {
 					...req.headers,
-					Authorization: session.accessJwt,
+					Authorization: `Bearer ${session.accessJwt}`,
 				},
 			};
 		}
