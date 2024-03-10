@@ -56,11 +56,9 @@ export interface XRPCRequest {
 }
 
 /** Response from XRPC service */
-export class XRPCResponse<T = any> {
-	constructor(
-		public data: T,
-		public headers: Headers,
-	) {}
+export interface XRPCResponse<T = any> {
+	data: T;
+	headers: Headers;
 }
 
 /** Options for constructing an XRPC error */
@@ -182,7 +180,7 @@ export class XRPC<Queries, Procedures> {
 		});
 
 		if (status === ResponseType.Success) {
-			return new XRPCResponse(body, headers);
+			return { data: body, headers: headers };
 		} else if (isErrorResponse(body)) {
 			throw new XRPCError(status, { kind: body.error, message: body.message, headers });
 		} else {
