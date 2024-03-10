@@ -1,0 +1,26 @@
+{
+	"name": "@mary/bluesky-client",
+	"version": "0.5.0",
+	"exports": {
+		".": "./lib/mod.ts",
+		"./xrpc": "./lib/xrpc.ts",
+		"./lexicons": "./lib/lexicons.ts",
+		"./utils/jwt": "./lib/utils/jwt.ts"
+	},
+	"tasks": {
+		"build:npm": "deno run -A ./scripts/build-npm.js",
+		"generate:lexicons": "deno run -A ./scripts/generate-lexicons.js",
+		"update:lexicons": "deno run -A ./scripts/update-lexicons.js"
+	},
+	"fmt": {
+		"useTabs": true,
+		"indentWidth": 2,
+		"lineWidth": 110,
+		"semiColons": true,
+		"singleQuote": true,
+		"exclude": ["npm/"]
+	},
+	"publish": {
+		"include": ["lib/", "deno.json", "CHANGELOG.md", "README.md", "LICENSE"]
+	}
+}
