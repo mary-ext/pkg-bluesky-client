@@ -35,3 +35,67 @@ rpc.get('app.bsky.actor.getProfile', {
 	},
 });
 ```
+
+Additional APIs like RichText and Moderation are also not included, but some alternatives are provided as
+examples in the repository.
+
+## Usage
+
+### Doing an unauthenticated request...
+
+```ts
+const rpc = new BskyXRPC({ service: 'https://public.api.bsky.app' });
+
+const profile = await rpc.get('app.bsky.actor.getProfile', {
+	params: {
+		actor: 'did:plc:ragtjsm2j2vknwkz3zp4oxrd',
+	},
+});
+
+console.log(profile.data); // -> { handle: 'pfrazee.com', ... }
+```
+
+### Doing an authenticated request...
+
+```ts
+const rpc = new BskyXRPC({ service: 'https://bsky.app' });
+const auth = new BskyAuth(rpc);
+
+await auth.login({ identifier: '...', password: '...' });
+
+const likes = await rpc.get('app.bsky.feed.getActorLikes', {
+	params: {
+		actor: auth.session.did,
+		limit: 5,
+	},
+});
+
+console.log(likes.data); // -> Array(5) [...]
+```
+
+### Fiddling with AT Protocol lexicons...
+
+Type declarations can be accessed via the `./lexicons` module.
+
+```ts
+import type { AppBskyRichtextFacet, Brand } from '@mary/bluesky-client/lexicons';
+
+type Facet = AppBskyRichtextFacet.Main;
+type MentionFeature = Brand.Union<AppBskyRichtextFacet.Mention>;
+
+const mention: MentionFeature = {
+	$type: 'app.bsky.richtext.facet#mention',
+	did: 'did:plc:ragtjsm2j2vknwkz3zp4oxrd',
+};
+
+const facet: Facet = {
+	index: {
+		byteStart: 7,
+		byteEnd: 12,
+	},
+	features: [mention],
+};
+```
+
+Objects are branded as unions are discriminated by the `$type` field, this means that the typings are slightly
+stricter than usual (can't use `ProfileView` in functions that only accepts `ProfileViewBasic`).
