@@ -2424,6 +2424,8 @@ export declare namespace ComAtprotoLabelDefs {
 	/** Metadata tag on an atproto resource (eg, repo or record). */
 	interface Label {
 		[Brand.Type]?: 'com.atproto.label.defs#label';
+		/** The AT Protocol version of the label object. */
+		ver?: number;
 		/** DID of the actor who created this label. */
 		src: At.DID;
 		/** AT URI of the record, repository (account), or other resource that this label applies to. */
@@ -2439,6 +2441,10 @@ export declare namespace ComAtprotoLabelDefs {
 		neg?: boolean;
 		/** Timestamp when this label was created. */
 		cts: string;
+		/** Timestamp at which this label expires (no longer applies). */
+		exp?: string;
+		/** Signature of dag-cbor encoded label. */
+		sig?: unknown;
 	}
 	/** Metadata tags on an atproto record, published by the author within the record. */
 	interface SelfLabels {

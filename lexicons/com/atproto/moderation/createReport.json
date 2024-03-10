@@ -22,7 +22,10 @@
 						},
 						"subject": {
 							"type": "union",
-							"refs": ["com.atproto.admin.defs#repoRef", "com.atproto.repo.strongRef"]
+							"refs": [
+								"com.atproto.admin.defs#repoRef",
+								"com.atproto.repo.strongRef"
+							]
 						}
 					}
 				}
@@ -31,7 +34,13 @@
 				"encoding": "application/json",
 				"schema": {
 					"type": "object",
-					"required": ["id", "reasonType", "subject", "reportedBy", "createdAt"],
+					"required": [
+						"id",
+						"reasonType",
+						"subject",
+						"reportedBy",
+						"createdAt"
+					],
 					"properties": {
 						"id": { "type": "integer" },
 						"reasonType": {
@@ -45,7 +54,10 @@
 						},
 						"subject": {
 							"type": "union",
-							"refs": ["com.atproto.admin.defs#repoRef", "com.atproto.repo.strongRef"]
+							"refs": [
+								"com.atproto.admin.defs#repoRef",
+								"com.atproto.repo.strongRef"
+							]
 						},
 						"reportedBy": { "type": "string", "format": "did" },
 						"createdAt": { "type": "string", "format": "datetime" }

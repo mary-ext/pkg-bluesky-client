@@ -19,7 +19,11 @@
 					}
 				}
 			},
-			"errors": [{ "name": "ExpiredToken" }, { "name": "InvalidToken" }, { "name": "TokenRequired" }]
+			"errors": [
+				{ "name": "ExpiredToken" },
+				{ "name": "InvalidToken" },
+				{ "name": "TokenRequired" }
+			]
 		}
 	}
 }

@@ -36,7 +36,15 @@
 		},
 		"notification": {
 			"type": "object",
-			"required": ["uri", "cid", "author", "reason", "record", "isRead", "indexedAt"],
+			"required": [
+				"uri",
+				"cid",
+				"author",
+				"reason",
+				"record",
+				"isRead",
+				"indexedAt"
+			],
 			"properties": {
 				"uri": { "type": "string", "format": "at-uri" },
 				"cid": { "type": "string", "format": "cid" },
@@ -44,7 +52,14 @@
 				"reason": {
 					"type": "string",
 					"description": "Expected values are 'like', 'repost', 'follow', 'mention', 'reply', and 'quote'.",
-					"knownValues": ["like", "repost", "follow", "mention", "reply", "quote"]
+					"knownValues": [
+						"like",
+						"repost",
+						"follow",
+						"mention",
+						"reply",
+						"quote"
+					]
 				},
 				"reasonSubject": { "type": "string", "format": "at-uri" },
 				"record": { "type": "unknown" },

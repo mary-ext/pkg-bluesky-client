@@ -29,7 +29,10 @@
 							"type": "array",
 							"items": {
 								"type": "union",
-								"refs": ["app.bsky.labeler.defs#labelerView", "app.bsky.labeler.defs#labelerViewDetailed"]
+								"refs": [
+									"app.bsky.labeler.defs#labelerView",
+									"app.bsky.labeler.defs#labelerViewDetailed"
+								]
 							}
 						}
 					}

@@ -12,7 +12,14 @@
 		},
 		"modEventView": {
 			"type": "object",
-			"required": ["id", "event", "subject", "subjectBlobCids", "createdBy", "createdAt"],
+			"required": [
+				"id",
+				"event",
+				"subject",
+				"subjectBlobCids",
+				"createdBy",
+				"createdAt"
+			],
 			"properties": {
 				"id": { "type": "integer" },
 				"event": {
@@ -43,7 +50,14 @@
 		},
 		"modEventViewDetail": {
 			"type": "object",
-			"required": ["id", "event", "subject", "subjectBlobs", "createdBy", "createdAt"],
+			"required": [
+				"id",
+				"event",
+				"subject",
+				"subjectBlobs",
+				"createdBy",
+				"createdAt"
+			],
 			"properties": {
 				"id": { "type": "integer" },
 				"event": {
@@ -63,7 +77,12 @@
 				},
 				"subject": {
 					"type": "union",
-					"refs": ["#repoView", "#repoViewNotFound", "#recordView", "#recordViewNotFound"]
+					"refs": [
+						"#repoView",
+						"#repoViewNotFound",
+						"#recordView",
+						"#recordViewNotFound"
+					]
 				},
 				"subjectBlobs": {
 					"type": "array",
@@ -75,7 +94,14 @@
 		},
 		"reportView": {
 			"type": "object",
-			"required": ["id", "reasonType", "subject", "reportedBy", "createdAt", "resolvedByActionIds"],
+			"required": [
+				"id",
+				"reasonType",
+				"subject",
+				"reportedBy",
+				"createdAt",
+				"resolvedByActionIds"
+			],
 			"properties": {
 				"id": { "type": "integer" },
 				"reasonType": {
@@ -168,7 +194,14 @@
 		},
 		"reportViewDetail": {
 			"type": "object",
-			"required": ["id", "reasonType", "subject", "reportedBy", "createdAt", "resolvedByActions"],
+			"required": [
+				"id",
+				"reasonType",
+				"subject",
+				"reportedBy",
+				"createdAt",
+				"resolvedByActions"
+			],
 			"properties": {
 				"id": { "type": "integer" },
 				"reasonType": {
@@ -178,7 +211,12 @@
 				"comment": { "type": "string" },
 				"subject": {
 					"type": "union",
-					"refs": ["#repoView", "#repoViewNotFound", "#recordView", "#recordViewNotFound"]
+					"refs": [
+						"#repoView",
+						"#repoViewNotFound",
+						"#recordView",
+						"#recordViewNotFound"
+					]
 				},
 				"subjectStatus": {
 					"type": "ref",
@@ -197,7 +235,13 @@
 		},
 		"repoView": {
 			"type": "object",
-			"required": ["did", "handle", "relatedRecords", "indexedAt", "moderation"],
+			"required": [
+				"did",
+				"handle",
+				"relatedRecords",
+				"indexedAt",
+				"moderation"
+			],
 			"properties": {
 				"did": { "type": "string", "format": "did" },
 				"handle": { "type": "string", "format": "handle" },
@@ -215,7 +259,13 @@
 		},
 		"repoViewDetail": {
 			"type": "object",
-			"required": ["did", "handle", "relatedRecords", "indexedAt", "moderation"],
+			"required": [
+				"did",
+				"handle",
+				"relatedRecords",
+				"indexedAt",
+				"moderation"
+			],
 			"properties": {
 				"did": { "type": "string", "format": "did" },
 				"handle": { "type": "string", "format": "handle" },
@@ -293,7 +343,15 @@
 		},
 		"recordView": {
 			"type": "object",
-			"required": ["uri", "cid", "value", "blobCids", "indexedAt", "moderation", "repo"],
+			"required": [
+				"uri",
+				"cid",
+				"value",
+				"blobCids",
+				"indexedAt",
+				"moderation",
+				"repo"
+			],
 			"properties": {
 				"uri": { "type": "string", "format": "at-uri" },
 				"cid": { "type": "string", "format": "cid" },
@@ -309,7 +367,15 @@
 		},
 		"recordViewDetail": {
 			"type": "object",
-			"required": ["uri", "cid", "value", "blobs", "indexedAt", "moderation", "repo"],
+			"required": [
+				"uri",
+				"cid",
+				"value",
+				"blobs",
+				"indexedAt",
+				"moderation",
+				"repo"
+			],
 			"properties": {
 				"uri": { "type": "string", "format": "at-uri" },
 				"cid": { "type": "string", "format": "cid" },
@@ -383,7 +449,12 @@
 		},
 		"subjectReviewState": {
 			"type": "string",
-			"knownValues": ["#reviewOpen", "#reviewEscalated", "#reviewClosed", "#reviewNone"]
+			"knownValues": [
+				"#reviewOpen",
+				"#reviewEscalated",
+				"#reviewClosed",
+				"#reviewNone"
+			]
 		},
 		"reviewOpen": {
 			"type": "token",
@@ -556,7 +627,15 @@
 		},
 		"communicationTemplateView": {
 			"type": "object",
-			"required": ["id", "name", "contentMarkdown", "disabled", "lastUpdatedBy", "createdAt", "updatedAt"],
+			"required": [
+				"id",
+				"name",
+				"contentMarkdown",
+				"disabled",
+				"lastUpdatedBy",
+				"createdAt",
+				"updatedAt"
+			],
 			"properties": {
 				"id": { "type": "string" },
 				"name": { "type": "string", "description": "Name of the template." },

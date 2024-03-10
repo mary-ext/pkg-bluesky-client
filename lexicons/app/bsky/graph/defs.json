@@ -48,7 +48,10 @@
 		},
 		"listPurpose": {
 			"type": "string",
-			"knownValues": ["app.bsky.graph.defs#modlist", "app.bsky.graph.defs#curatelist"]
+			"knownValues": [
+				"app.bsky.graph.defs#modlist",
+				"app.bsky.graph.defs#curatelist"
+			]
 		},
 		"modlist": {
 			"type": "token",
