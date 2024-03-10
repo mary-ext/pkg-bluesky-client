@@ -219,7 +219,9 @@ export declare namespace At {
 let queries = '';
 let procedures = '';
 
-for (const filename of fg.sync('lexicons/**/*.json')) {
+const collator = new Intl.Collator('en-US');
+
+for (const filename of fg.sync('lexicons/**/*.json').sort((a, b) => collator.compare(a, b))) {
 	const jsonString = Deno.readTextFileSync(filename);
 	const json = JSON.parse(jsonString);
 

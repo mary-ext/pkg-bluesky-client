@@ -810,6 +810,21 @@ export declare namespace AppBskyFeedGetListFeed {
 	}
 }
 
+/** Gets post views for a specified list of posts (by AT-URI). This is sometimes referred to as 'hydrating' a 'feed skeleton'. */
+export declare namespace AppBskyFeedGetPosts {
+	interface Params {
+		/**
+		 * List of post AT-URIs to return hydrated views for. \
+		 * Maximum array length: 25
+		 */
+		uris: (At.Uri)[];
+	}
+	type Input = undefined;
+	interface Output {
+		posts: (AppBskyFeedDefs.PostView)[];
+	}
+}
+
 /** Get posts in a thread. Does not require auth, but additional metadata and filtering will be applied for authed requests. */
 export declare namespace AppBskyFeedGetPostThread {
 	interface Params {
@@ -865,21 +880,6 @@ export declare namespace AppBskyFeedGetRepostedBy {
 	}
 }
 
-/** Gets post views for a specified list of posts (by AT-URI). This is sometimes referred to as 'hydrating' a 'feed skeleton'. */
-export declare namespace AppBskyFeedGetPosts {
-	interface Params {
-		/**
-		 * List of post AT-URIs to return hydrated views for. \
-		 * Maximum array length: 25
-		 */
-		uris: (At.Uri)[];
-	}
-	type Input = undefined;
-	interface Output {
-		posts: (AppBskyFeedDefs.PostView)[];
-	}
-}
-
 /** Get a list of suggested feeds (feed generators) for the requesting account. */
 export declare namespace AppBskyFeedGetSuggestedFeeds {
 	interface Params {
@@ -915,6 +915,13 @@ export declare namespace AppBskyFeedGetTimeline {
 	interface Output {
 		cursor?: string;
 		feed: (AppBskyFeedDefs.FeedViewPost)[];
+	}
+}
+
+export declare namespace AppBskyFeedLike {
+	interface Record {
+		subject: ComAtprotoRepoStrongRef.Main;
+		createdAt: string;
 	}
 }
 
@@ -983,13 +990,6 @@ export declare namespace AppBskyFeedPost {
 		start: number;
 		/** Minimum: 0 */
 		end: number;
-	}
-}
-
-export declare namespace AppBskyFeedLike {
-	interface Record {
-		subject: ComAtprotoRepoStrongRef.Main;
-		createdAt: string;
 	}
 }
 
@@ -1209,6 +1209,24 @@ export declare namespace AppBskyGraphGetList {
 	}
 }
 
+/** Get mod lists that the requesting account (actor) is blocking. Requires auth. */
+export declare namespace AppBskyGraphGetListBlocks {
+	interface Params {
+		/**
+		 * Minimum: 1 \
+		 * Maximum: 100
+		 * @default 50
+		 */
+		limit?: number;
+		cursor?: string;
+	}
+	type Input = undefined;
+	interface Output {
+		cursor?: string;
+		lists: (AppBskyGraphDefs.ListView)[];
+	}
+}
+
 /** Enumerates mod lists that the requesting account (actor) currently has muted. Requires auth. */
 export declare namespace AppBskyGraphGetListMutes {
 	interface Params {
@@ -1371,24 +1389,6 @@ export declare namespace AppBskyGraphUnmuteActorList {
 		list: At.Uri;
 	}
 	type Output = undefined;
-}
-
-/** Get mod lists that the requesting account (actor) is blocking. Requires auth. */
-export declare namespace AppBskyGraphGetListBlocks {
-	interface Params {
-		/**
-		 * Minimum: 1 \
-		 * Maximum: 100
-		 * @default 50
-		 */
-		limit?: number;
-		cursor?: string;
-	}
-	type Input = undefined;
-	interface Output {
-		cursor?: string;
-		lists: (AppBskyGraphDefs.ListView)[];
-	}
 }
 
 export declare namespace AppBskyLabelerDefs {
@@ -1561,21 +1561,6 @@ export declare namespace AppBskyUnspeccedDefs {
 	}
 }
 
-/** Get a list of suggestions (feeds and users) tagged with categories */
-export declare namespace AppBskyUnspeccedGetTaggedSuggestions {
-	interface Params {}
-	type Input = undefined;
-	interface Output {
-		suggestions: (Suggestion)[];
-	}
-	interface Suggestion {
-		[Brand.Type]?: 'app.bsky.unspecced.getTaggedSuggestions#suggestion';
-		tag: string;
-		subjectType: 'actor' | 'feed' | (string & {});
-		subject: string;
-	}
-}
-
 /** An unspecced view of globally popular feed generators. */
 export declare namespace AppBskyUnspeccedGetPopularFeedGenerators {
 	interface Params {
@@ -1592,6 +1577,21 @@ export declare namespace AppBskyUnspeccedGetPopularFeedGenerators {
 	interface Output {
 		cursor?: string;
 		feeds: (AppBskyFeedDefs.GeneratorView)[];
+	}
+}
+
+/** Get a list of suggestions (feeds and users) tagged with categories */
+export declare namespace AppBskyUnspeccedGetTaggedSuggestions {
+	interface Params {}
+	type Input = undefined;
+	interface Output {
+		suggestions: (Suggestion)[];
+	}
+	interface Suggestion {
+		[Brand.Type]?: 'app.bsky.unspecced.getTaggedSuggestions#suggestion';
+		tag: string;
+		subjectType: 'actor' | 'feed' | (string & {});
+		subject: string;
 	}
 }
 
@@ -2013,6 +2013,53 @@ export declare namespace ComAtprotoAdminDisableInviteCodes {
 	type Output = undefined;
 }
 
+/** Take a moderation action on an actor. */
+export declare namespace ComAtprotoAdminEmitModerationEvent {
+	interface Params {}
+	interface Input {
+		event: Brand.Union<
+			| ComAtprotoAdminDefs.ModEventTakedown
+			| ComAtprotoAdminDefs.ModEventAcknowledge
+			| ComAtprotoAdminDefs.ModEventEscalate
+			| ComAtprotoAdminDefs.ModEventComment
+			| ComAtprotoAdminDefs.ModEventLabel
+			| ComAtprotoAdminDefs.ModEventReport
+			| ComAtprotoAdminDefs.ModEventMute
+			| ComAtprotoAdminDefs.ModEventReverseTakedown
+			| ComAtprotoAdminDefs.ModEventUnmute
+			| ComAtprotoAdminDefs.ModEventEmail
+			| ComAtprotoAdminDefs.ModEventTag
+		>;
+		subject: Brand.Union<ComAtprotoAdminDefs.RepoRef | ComAtprotoRepoStrongRef.Main>;
+		subjectBlobCids?: (At.CID)[];
+		createdBy: At.DID;
+	}
+	type Output = ComAtprotoAdminDefs.ModEventView;
+	interface Errors {
+		SubjectHasAction: {};
+	}
+}
+
+/** Re-enable an account's ability to receive invite codes. */
+export declare namespace ComAtprotoAdminEnableAccountInvites {
+	interface Params {}
+	interface Input {
+		account: At.DID;
+		/** Optional reason for enabled invites. */
+		note?: string;
+	}
+	type Output = undefined;
+}
+
+/** Get details about an account. */
+export declare namespace ComAtprotoAdminGetAccountInfo {
+	interface Params {
+		did: At.DID;
+	}
+	type Input = undefined;
+	type Output = ComAtprotoAdminDefs.AccountView;
+}
+
 /** Get details about some accounts. */
 export declare namespace ComAtprotoAdminGetAccountInfos {
 	interface Params {
@@ -2022,6 +2069,35 @@ export declare namespace ComAtprotoAdminGetAccountInfos {
 	interface Output {
 		infos: (ComAtprotoAdminDefs.AccountView)[];
 	}
+}
+
+/** Get an admin view of invite codes. */
+export declare namespace ComAtprotoAdminGetInviteCodes {
+	interface Params {
+		/** @default "recent" */
+		sort?: 'recent' | 'usage' | (string & {});
+		/**
+		 * Minimum: 1 \
+		 * Maximum: 500
+		 * @default 100
+		 */
+		limit?: number;
+		cursor?: string;
+	}
+	type Input = undefined;
+	interface Output {
+		cursor?: string;
+		codes: (ComAtprotoServerDefs.InviteCode)[];
+	}
+}
+
+/** Get details about a moderation event. */
+export declare namespace ComAtprotoAdminGetModerationEvent {
+	interface Params {
+		id: number;
+	}
+	type Input = undefined;
+	type Output = ComAtprotoAdminDefs.ModEventViewDetail;
 }
 
 /** Get details about a record. */
@@ -2065,69 +2141,12 @@ export declare namespace ComAtprotoAdminGetSubjectStatus {
 	}
 }
 
-/** Re-enable an account's ability to receive invite codes. */
-export declare namespace ComAtprotoAdminEnableAccountInvites {
-	interface Params {}
-	interface Input {
-		account: At.DID;
-		/** Optional reason for enabled invites. */
-		note?: string;
-	}
-	type Output = undefined;
-}
-
 /** Get list of all communication templates. */
 export declare namespace ComAtprotoAdminListCommunicationTemplates {
 	interface Params {}
 	type Input = undefined;
 	interface Output {
 		communicationTemplates: (ComAtprotoAdminDefs.CommunicationTemplateView)[];
-	}
-}
-
-/** View moderation statuses of subjects (record or repo). */
-export declare namespace ComAtprotoAdminQueryModerationStatuses {
-	interface Params {
-		subject?: string;
-		/** Search subjects by keyword from comments */
-		comment?: string;
-		/** Search subjects reported after a given timestamp */
-		reportedAfter?: string;
-		/** Search subjects reported before a given timestamp */
-		reportedBefore?: string;
-		/** Search subjects reviewed after a given timestamp */
-		reviewedAfter?: string;
-		/** Search subjects reviewed before a given timestamp */
-		reviewedBefore?: string;
-		/** By default, we don't include muted subjects in the results. Set this to true to include them. */
-		includeMuted?: boolean;
-		/** Specify when fetching subjects in a certain state */
-		reviewState?: string;
-		ignoreSubjects?: (string)[];
-		/** Get all subject statuses that were reviewed by a specific moderator */
-		lastReviewedBy?: At.DID;
-		/** @default "lastReportedAt" */
-		sortField?: 'lastReviewedAt' | 'lastReportedAt';
-		/** @default "desc" */
-		sortDirection?: 'asc' | 'desc';
-		/** Get subjects that were taken down */
-		takendown?: boolean;
-		/** Get subjects in unresolved appealed status */
-		appealed?: boolean;
-		/**
-		 * Minimum: 1 \
-		 * Maximum: 100
-		 * @default 50
-		 */
-		limit?: number;
-		tags?: (string)[];
-		excludeTags?: (string)[];
-		cursor?: string;
-	}
-	type Input = undefined;
-	interface Output {
-		cursor?: string;
-		subjectStatuses: (ComAtprotoAdminDefs.SubjectStatusView)[];
 	}
 }
 
@@ -2180,6 +2199,76 @@ export declare namespace ComAtprotoAdminQueryModerationEvents {
 	}
 }
 
+/** View moderation statuses of subjects (record or repo). */
+export declare namespace ComAtprotoAdminQueryModerationStatuses {
+	interface Params {
+		subject?: string;
+		/** Search subjects by keyword from comments */
+		comment?: string;
+		/** Search subjects reported after a given timestamp */
+		reportedAfter?: string;
+		/** Search subjects reported before a given timestamp */
+		reportedBefore?: string;
+		/** Search subjects reviewed after a given timestamp */
+		reviewedAfter?: string;
+		/** Search subjects reviewed before a given timestamp */
+		reviewedBefore?: string;
+		/** By default, we don't include muted subjects in the results. Set this to true to include them. */
+		includeMuted?: boolean;
+		/** Specify when fetching subjects in a certain state */
+		reviewState?: string;
+		ignoreSubjects?: (string)[];
+		/** Get all subject statuses that were reviewed by a specific moderator */
+		lastReviewedBy?: At.DID;
+		/** @default "lastReportedAt" */
+		sortField?: 'lastReviewedAt' | 'lastReportedAt';
+		/** @default "desc" */
+		sortDirection?: 'asc' | 'desc';
+		/** Get subjects that were taken down */
+		takendown?: boolean;
+		/** Get subjects in unresolved appealed status */
+		appealed?: boolean;
+		/**
+		 * Minimum: 1 \
+		 * Maximum: 100
+		 * @default 50
+		 */
+		limit?: number;
+		tags?: (string)[];
+		excludeTags?: (string)[];
+		cursor?: string;
+	}
+	type Input = undefined;
+	interface Output {
+		cursor?: string;
+		subjectStatuses: (ComAtprotoAdminDefs.SubjectStatusView)[];
+	}
+}
+
+/** Find repositories based on a search term. */
+export declare namespace ComAtprotoAdminSearchRepos {
+	interface Params {
+		/**
+		 * DEPRECATED: use 'q' instead
+		 * @deprecated
+		 */
+		term?: string;
+		q?: string;
+		/**
+		 * Minimum: 1 \
+		 * Maximum: 100
+		 * @default 50
+		 */
+		limit?: number;
+		cursor?: string;
+	}
+	type Input = undefined;
+	interface Output {
+		cursor?: string;
+		repos: (ComAtprotoAdminDefs.RepoView)[];
+	}
+}
+
 /** Send email to a user's account email address. */
 export declare namespace ComAtprotoAdminSendEmail {
 	interface Params {}
@@ -2203,6 +2292,16 @@ export declare namespace ComAtprotoAdminUpdateAccountEmail {
 		/** The handle or DID of the repo. */
 		account: string;
 		email: string;
+	}
+	type Output = undefined;
+}
+
+/** Administrative action to update an account's handle. */
+export declare namespace ComAtprotoAdminUpdateAccountHandle {
+	interface Params {}
+	interface Input {
+		did: At.DID;
+		handle: At.Handle;
 	}
 	type Output = undefined;
 }
@@ -2236,105 +2335,6 @@ export declare namespace ComAtprotoAdminUpdateCommunicationTemplate {
 	type Output = ComAtprotoAdminDefs.CommunicationTemplateView;
 }
 
-/** Take a moderation action on an actor. */
-export declare namespace ComAtprotoAdminEmitModerationEvent {
-	interface Params {}
-	interface Input {
-		event: Brand.Union<
-			| ComAtprotoAdminDefs.ModEventTakedown
-			| ComAtprotoAdminDefs.ModEventAcknowledge
-			| ComAtprotoAdminDefs.ModEventEscalate
-			| ComAtprotoAdminDefs.ModEventComment
-			| ComAtprotoAdminDefs.ModEventLabel
-			| ComAtprotoAdminDefs.ModEventReport
-			| ComAtprotoAdminDefs.ModEventMute
-			| ComAtprotoAdminDefs.ModEventReverseTakedown
-			| ComAtprotoAdminDefs.ModEventUnmute
-			| ComAtprotoAdminDefs.ModEventEmail
-			| ComAtprotoAdminDefs.ModEventTag
-		>;
-		subject: Brand.Union<ComAtprotoAdminDefs.RepoRef | ComAtprotoRepoStrongRef.Main>;
-		subjectBlobCids?: (At.CID)[];
-		createdBy: At.DID;
-	}
-	type Output = ComAtprotoAdminDefs.ModEventView;
-	interface Errors {
-		SubjectHasAction: {};
-	}
-}
-
-/** Get details about an account. */
-export declare namespace ComAtprotoAdminGetAccountInfo {
-	interface Params {
-		did: At.DID;
-	}
-	type Input = undefined;
-	type Output = ComAtprotoAdminDefs.AccountView;
-}
-
-/** Get an admin view of invite codes. */
-export declare namespace ComAtprotoAdminGetInviteCodes {
-	interface Params {
-		/** @default "recent" */
-		sort?: 'recent' | 'usage' | (string & {});
-		/**
-		 * Minimum: 1 \
-		 * Maximum: 500
-		 * @default 100
-		 */
-		limit?: number;
-		cursor?: string;
-	}
-	type Input = undefined;
-	interface Output {
-		cursor?: string;
-		codes: (ComAtprotoServerDefs.InviteCode)[];
-	}
-}
-
-/** Get details about a moderation event. */
-export declare namespace ComAtprotoAdminGetModerationEvent {
-	interface Params {
-		id: number;
-	}
-	type Input = undefined;
-	type Output = ComAtprotoAdminDefs.ModEventViewDetail;
-}
-
-/** Find repositories based on a search term. */
-export declare namespace ComAtprotoAdminSearchRepos {
-	interface Params {
-		/**
-		 * DEPRECATED: use 'q' instead
-		 * @deprecated
-		 */
-		term?: string;
-		q?: string;
-		/**
-		 * Minimum: 1 \
-		 * Maximum: 100
-		 * @default 50
-		 */
-		limit?: number;
-		cursor?: string;
-	}
-	type Input = undefined;
-	interface Output {
-		cursor?: string;
-		repos: (ComAtprotoAdminDefs.RepoView)[];
-	}
-}
-
-/** Administrative action to update an account's handle. */
-export declare namespace ComAtprotoAdminUpdateAccountHandle {
-	interface Params {}
-	interface Input {
-		did: At.DID;
-		handle: At.Handle;
-	}
-	type Output = undefined;
-}
-
 /** Update the service-specific admin status of a subject (account, record, or blob). */
 export declare namespace ComAtprotoAdminUpdateSubjectStatus {
 	interface Params {}
@@ -2365,6 +2365,13 @@ export declare namespace ComAtprotoIdentityGetRecommendedDidCredentials {
 	}
 }
 
+/** Request an email with a code to in order to request a signed PLC operation. Requires Auth. */
+export declare namespace ComAtprotoIdentityRequestPlcOperationSignature {
+	interface Params {}
+	type Input = undefined;
+	type Output = undefined;
+}
+
 /** Resolves a handle (domain name) to a DID. */
 export declare namespace ComAtprotoIdentityResolveHandle {
 	interface Params {
@@ -2392,13 +2399,6 @@ export declare namespace ComAtprotoIdentitySignPlcOperation {
 		/** A signed DID PLC operation. */
 		operation: unknown;
 	}
-}
-
-/** Request an email with a code to in order to request a signed PLC operation. Requires Auth. */
-export declare namespace ComAtprotoIdentityRequestPlcOperationSignature {
-	interface Params {}
-	type Input = undefined;
-	type Output = undefined;
 }
 
 /** Validates a PLC operation to ensure that it doesn't violate a service's constraints or get the identity into a bad state, then submits it to the PLC registry */
@@ -2722,6 +2722,29 @@ export declare namespace ComAtprotoRepoImportRepo {
 	type Output = undefined;
 }
 
+/** Returns a list of missing blobs for the requesting account. Intended to be used in the account migration flow. */
+export declare namespace ComAtprotoRepoListMissingBlobs {
+	interface Params {
+		/**
+		 * Minimum: 1 \
+		 * Maximum: 1000
+		 * @default 500
+		 */
+		limit?: number;
+		cursor?: string;
+	}
+	type Input = undefined;
+	interface Output {
+		cursor?: string;
+		blobs: (RecordBlob)[];
+	}
+	interface RecordBlob {
+		[Brand.Type]?: 'com.atproto.repo.listMissingBlobs#recordBlob';
+		cid: At.CID;
+		recordUri: At.Uri;
+	}
+}
+
 /** List a range of records in a repository, matching a specific collection. Does not require auth. */
 export declare namespace ComAtprotoRepoListRecords {
 	interface Params {
@@ -2814,29 +2837,6 @@ export declare namespace ComAtprotoRepoUploadBlob {
 	}
 }
 
-/** Returns a list of missing blobs for the requesting account. Intended to be used in the account migration flow. */
-export declare namespace ComAtprotoRepoListMissingBlobs {
-	interface Params {
-		/**
-		 * Minimum: 1 \
-		 * Maximum: 1000
-		 * @default 500
-		 */
-		limit?: number;
-		cursor?: string;
-	}
-	type Input = undefined;
-	interface Output {
-		cursor?: string;
-		blobs: (RecordBlob)[];
-	}
-	interface RecordBlob {
-		[Brand.Type]?: 'com.atproto.repo.listMissingBlobs#recordBlob';
-		cid: At.CID;
-		recordUri: At.Uri;
-	}
-}
-
 /** Activates a currently deactivated account. Used to finalize account migration after the account's repo is imported and identity is setup. */
 export declare namespace ComAtprotoServerActivateAccount {
 	interface Params {}
@@ -2917,6 +2917,37 @@ export declare namespace ComAtprotoServerCreateAccount {
 	}
 }
 
+/** Create an App Password. */
+export declare namespace ComAtprotoServerCreateAppPassword {
+	interface Params {}
+	interface Input {
+		/** A short name for the App Password, to help distinguish them. */
+		name: string;
+	}
+	type Output = AppPassword;
+	interface Errors {
+		AccountTakedown: {};
+	}
+	interface AppPassword {
+		[Brand.Type]?: 'com.atproto.server.createAppPassword#appPassword';
+		name: string;
+		password: string;
+		createdAt: string;
+	}
+}
+
+/** Create an invite code. */
+export declare namespace ComAtprotoServerCreateInviteCode {
+	interface Params {}
+	interface Input {
+		useCount: number;
+		forAccount?: At.DID;
+	}
+	interface Output {
+		code: string;
+	}
+}
+
 /** Create invite codes. */
 export declare namespace ComAtprotoServerCreateInviteCodes {
 	interface Params {}
@@ -2958,6 +2989,16 @@ export declare namespace ComAtprotoServerCreateSession {
 	}
 }
 
+/** Deactivates a currently active account. Stops serving of repo, and future writes to repo until reactivated. Used to finalize account migration with the old host after the account has been activated on the new host. */
+export declare namespace ComAtprotoServerDeactivateAccount {
+	interface Params {}
+	interface Input {
+		/** A recommendation to server as to how long they should hold onto the deactivated account before deleting. */
+		deleteAfter?: string;
+	}
+	type Output = undefined;
+}
+
 export declare namespace ComAtprotoServerDefs {
 	interface InviteCode {
 		[Brand.Type]?: 'com.atproto.server.defs#inviteCode';
@@ -2974,6 +3015,28 @@ export declare namespace ComAtprotoServerDefs {
 		usedBy: At.DID;
 		usedAt: string;
 	}
+}
+
+/** Delete an actor's account with a token and password. Can only be called after requesting a deletion token. Requires auth. */
+export declare namespace ComAtprotoServerDeleteAccount {
+	interface Params {}
+	interface Input {
+		did: At.DID;
+		password: string;
+		token: string;
+	}
+	type Output = undefined;
+	interface Errors {
+		ExpiredToken: {};
+		InvalidToken: {};
+	}
+}
+
+/** Delete the current session. Requires auth. */
+export declare namespace ComAtprotoServerDeleteSession {
+	interface Params {}
+	type Input = undefined;
+	type Output = undefined;
 }
 
 /** Describes the server's account creation requirements and capabilities. Implemented by PDS. */
@@ -2998,11 +3061,24 @@ export declare namespace ComAtprotoServerDescribeServer {
 	}
 }
 
-/** Delete the current session. Requires auth. */
-export declare namespace ComAtprotoServerDeleteSession {
-	interface Params {}
+/** Get all invite codes for the current account. Requires auth. */
+export declare namespace ComAtprotoServerGetAccountInviteCodes {
+	interface Params {
+		/** @default true */
+		includeUsed?: boolean;
+		/**
+		 * Controls whether any new 'earned' but not 'created' invites should be created.
+		 * @default true
+		 */
+		createAvailable?: boolean;
+	}
 	type Input = undefined;
-	type Output = undefined;
+	interface Output {
+		codes: (ComAtprotoServerDefs.InviteCode)[];
+	}
+	interface Errors {
+		DuplicateCreate: {};
+	}
 }
 
 /** Get a signed token on behalf of the requesting DID for the requested service. */
@@ -3028,47 +3104,6 @@ export declare namespace ComAtprotoServerGetSession {
 		emailConfirmed?: boolean;
 		didDoc?: unknown;
 	}
-}
-
-/** Create an App Password. */
-export declare namespace ComAtprotoServerCreateAppPassword {
-	interface Params {}
-	interface Input {
-		/** A short name for the App Password, to help distinguish them. */
-		name: string;
-	}
-	type Output = AppPassword;
-	interface Errors {
-		AccountTakedown: {};
-	}
-	interface AppPassword {
-		[Brand.Type]?: 'com.atproto.server.createAppPassword#appPassword';
-		name: string;
-		password: string;
-		createdAt: string;
-	}
-}
-
-/** Create an invite code. */
-export declare namespace ComAtprotoServerCreateInviteCode {
-	interface Params {}
-	interface Input {
-		useCount: number;
-		forAccount?: At.DID;
-	}
-	interface Output {
-		code: string;
-	}
-}
-
-/** Deactivates a currently active account. Stops serving of repo, and future writes to repo until reactivated. Used to finalize account migration with the old host after the account has been activated on the new host. */
-export declare namespace ComAtprotoServerDeactivateAccount {
-	interface Params {}
-	interface Input {
-		/** A recommendation to server as to how long they should hold onto the deactivated account before deleting. */
-		deleteAfter?: string;
-	}
-	type Output = undefined;
 }
 
 /** List all App Passwords. */
@@ -3104,6 +3139,13 @@ export declare namespace ComAtprotoServerRefreshSession {
 	}
 }
 
+/** Initiate a user account deletion via email. */
+export declare namespace ComAtprotoServerRequestAccountDelete {
+	interface Params {}
+	type Input = undefined;
+	type Output = undefined;
+}
+
 /** Request an email with a code to confirm ownership of email. */
 export declare namespace ComAtprotoServerRequestEmailConfirmation {
 	interface Params {}
@@ -3129,18 +3171,16 @@ export declare namespace ComAtprotoServerRequestPasswordReset {
 	type Output = undefined;
 }
 
-/** Delete an actor's account with a token and password. Can only be called after requesting a deletion token. Requires auth. */
-export declare namespace ComAtprotoServerDeleteAccount {
+/** Reserve a repo signing key, for use with account creation. Necessary so that a DID PLC update operation can be constructed during an account migraiton. Public and does not require auth; implemented by PDS. NOTE: this endpoint may change when full account migration is implemented. */
+export declare namespace ComAtprotoServerReserveSigningKey {
 	interface Params {}
 	interface Input {
-		did: At.DID;
-		password: string;
-		token: string;
+		/** The DID to reserve a key for. */
+		did?: At.DID;
 	}
-	type Output = undefined;
-	interface Errors {
-		ExpiredToken: {};
-		InvalidToken: {};
+	interface Output {
+		/** The public key for the reserved signing key, in did:key serialization. */
+		signingKey: string;
 	}
 }
 
@@ -3183,46 +3223,6 @@ export declare namespace ComAtprotoServerUpdateEmail {
 	}
 }
 
-/** Get all invite codes for the current account. Requires auth. */
-export declare namespace ComAtprotoServerGetAccountInviteCodes {
-	interface Params {
-		/** @default true */
-		includeUsed?: boolean;
-		/**
-		 * Controls whether any new 'earned' but not 'created' invites should be created.
-		 * @default true
-		 */
-		createAvailable?: boolean;
-	}
-	type Input = undefined;
-	interface Output {
-		codes: (ComAtprotoServerDefs.InviteCode)[];
-	}
-	interface Errors {
-		DuplicateCreate: {};
-	}
-}
-
-/** Initiate a user account deletion via email. */
-export declare namespace ComAtprotoServerRequestAccountDelete {
-	interface Params {}
-	type Input = undefined;
-	type Output = undefined;
-}
-
-/** Reserve a repo signing key, for use with account creation. Necessary so that a DID PLC update operation can be constructed during an account migraiton. Public and does not require auth; implemented by PDS. NOTE: this endpoint may change when full account migration is implemented. */
-export declare namespace ComAtprotoServerReserveSigningKey {
-	interface Params {}
-	interface Input {
-		/** The DID to reserve a key for. */
-		did?: At.DID;
-	}
-	interface Output {
-		/** The public key for the reserved signing key, in did:key serialization. */
-		signingKey: string;
-	}
-}
-
 /** Get a blob associated with a given account. Returns the full blob as originally uploaded. Does not require auth; implemented by PDS. */
 export declare namespace ComAtprotoSyncGetBlob {
 	interface Params {
@@ -3259,22 +3259,6 @@ export declare namespace ComAtprotoSyncGetCheckout {
 	type Output = Uint8Array;
 }
 
-/** Get the current commit CID & revision of the specified repo. Does not require auth. */
-export declare namespace ComAtprotoSyncGetLatestCommit {
-	interface Params {
-		/** The DID of the repo. */
-		did: At.DID;
-	}
-	type Input = undefined;
-	interface Output {
-		cid: At.CID;
-		rev: string;
-	}
-	interface Errors {
-		RepoNotFound: {};
-	}
-}
-
 /**
  * DEPRECATED - please use com.atproto.sync.getLatestCommit instead
  * @deprecated
@@ -3290,6 +3274,22 @@ export declare namespace ComAtprotoSyncGetHead {
 	}
 	interface Errors {
 		HeadNotFound: {};
+	}
+}
+
+/** Get the current commit CID & revision of the specified repo. Does not require auth. */
+export declare namespace ComAtprotoSyncGetLatestCommit {
+	interface Params {
+		/** The DID of the repo. */
+		did: At.DID;
+	}
+	type Input = undefined;
+	interface Output {
+		cid: At.CID;
+		rev: string;
+	}
+	interface Errors {
+		RepoNotFound: {};
 	}
 }
 
@@ -3574,6 +3574,10 @@ export declare interface Queries {
 		params: AppBskyFeedGetListFeed.Params;
 		output: AppBskyFeedGetListFeed.Output;
 	};
+	'app.bsky.feed.getPosts': {
+		params: AppBskyFeedGetPosts.Params;
+		output: AppBskyFeedGetPosts.Output;
+	};
 	'app.bsky.feed.getPostThread': {
 		params: AppBskyFeedGetPostThread.Params;
 		output: AppBskyFeedGetPostThread.Output;
@@ -3581,10 +3585,6 @@ export declare interface Queries {
 	'app.bsky.feed.getRepostedBy': {
 		params: AppBskyFeedGetRepostedBy.Params;
 		output: AppBskyFeedGetRepostedBy.Output;
-	};
-	'app.bsky.feed.getPosts': {
-		params: AppBskyFeedGetPosts.Params;
-		output: AppBskyFeedGetPosts.Output;
 	};
 	'app.bsky.feed.getSuggestedFeeds': {
 		params: AppBskyFeedGetSuggestedFeeds.Params;
@@ -3614,6 +3614,10 @@ export declare interface Queries {
 		params: AppBskyGraphGetList.Params;
 		output: AppBskyGraphGetList.Output;
 	};
+	'app.bsky.graph.getListBlocks': {
+		params: AppBskyGraphGetListBlocks.Params;
+		output: AppBskyGraphGetListBlocks.Output;
+	};
 	'app.bsky.graph.getListMutes': {
 		params: AppBskyGraphGetListMutes.Params;
 		output: AppBskyGraphGetListMutes.Output;
@@ -3634,10 +3638,6 @@ export declare interface Queries {
 		params: AppBskyGraphGetSuggestedFollowsByActor.Params;
 		output: AppBskyGraphGetSuggestedFollowsByActor.Output;
 	};
-	'app.bsky.graph.getListBlocks': {
-		params: AppBskyGraphGetListBlocks.Params;
-		output: AppBskyGraphGetListBlocks.Output;
-	};
 	'app.bsky.labeler.getServices': {
 		params: AppBskyLabelerGetServices.Params;
 		output: AppBskyLabelerGetServices.Output;
@@ -3650,13 +3650,13 @@ export declare interface Queries {
 		params: AppBskyNotificationListNotifications.Params;
 		output: AppBskyNotificationListNotifications.Output;
 	};
-	'app.bsky.unspecced.getTaggedSuggestions': {
-		params: AppBskyUnspeccedGetTaggedSuggestions.Params;
-		output: AppBskyUnspeccedGetTaggedSuggestions.Output;
-	};
 	'app.bsky.unspecced.getPopularFeedGenerators': {
 		params: AppBskyUnspeccedGetPopularFeedGenerators.Params;
 		output: AppBskyUnspeccedGetPopularFeedGenerators.Output;
+	};
+	'app.bsky.unspecced.getTaggedSuggestions': {
+		params: AppBskyUnspeccedGetTaggedSuggestions.Params;
+		output: AppBskyUnspeccedGetTaggedSuggestions.Output;
 	};
 	'app.bsky.unspecced.searchActorsSkeleton': {
 		params: AppBskyUnspeccedSearchActorsSkeleton.Params;
@@ -3666,9 +3666,21 @@ export declare interface Queries {
 		params: AppBskyUnspeccedSearchPostsSkeleton.Params;
 		output: AppBskyUnspeccedSearchPostsSkeleton.Output;
 	};
+	'com.atproto.admin.getAccountInfo': {
+		params: ComAtprotoAdminGetAccountInfo.Params;
+		output: ComAtprotoAdminGetAccountInfo.Output;
+	};
 	'com.atproto.admin.getAccountInfos': {
 		params: ComAtprotoAdminGetAccountInfos.Params;
 		output: ComAtprotoAdminGetAccountInfos.Output;
+	};
+	'com.atproto.admin.getInviteCodes': {
+		params: ComAtprotoAdminGetInviteCodes.Params;
+		output: ComAtprotoAdminGetInviteCodes.Output;
+	};
+	'com.atproto.admin.getModerationEvent': {
+		params: ComAtprotoAdminGetModerationEvent.Params;
+		output: ComAtprotoAdminGetModerationEvent.Output;
 	};
 	'com.atproto.admin.getRecord': {
 		params: ComAtprotoAdminGetRecord.Params;
@@ -3685,25 +3697,13 @@ export declare interface Queries {
 	'com.atproto.admin.listCommunicationTemplates': {
 		output: ComAtprotoAdminListCommunicationTemplates.Output;
 	};
-	'com.atproto.admin.queryModerationStatuses': {
-		params: ComAtprotoAdminQueryModerationStatuses.Params;
-		output: ComAtprotoAdminQueryModerationStatuses.Output;
-	};
 	'com.atproto.admin.queryModerationEvents': {
 		params: ComAtprotoAdminQueryModerationEvents.Params;
 		output: ComAtprotoAdminQueryModerationEvents.Output;
 	};
-	'com.atproto.admin.getAccountInfo': {
-		params: ComAtprotoAdminGetAccountInfo.Params;
-		output: ComAtprotoAdminGetAccountInfo.Output;
-	};
-	'com.atproto.admin.getInviteCodes': {
-		params: ComAtprotoAdminGetInviteCodes.Params;
-		output: ComAtprotoAdminGetInviteCodes.Output;
-	};
-	'com.atproto.admin.getModerationEvent': {
-		params: ComAtprotoAdminGetModerationEvent.Params;
-		output: ComAtprotoAdminGetModerationEvent.Output;
+	'com.atproto.admin.queryModerationStatuses': {
+		params: ComAtprotoAdminQueryModerationStatuses.Params;
+		output: ComAtprotoAdminQueryModerationStatuses.Output;
 	};
 	'com.atproto.admin.searchRepos': {
 		params: ComAtprotoAdminSearchRepos.Params;
@@ -3728,19 +3728,23 @@ export declare interface Queries {
 		params: ComAtprotoRepoGetRecord.Params;
 		output: ComAtprotoRepoGetRecord.Output;
 	};
-	'com.atproto.repo.listRecords': {
-		params: ComAtprotoRepoListRecords.Params;
-		output: ComAtprotoRepoListRecords.Output;
-	};
 	'com.atproto.repo.listMissingBlobs': {
 		params: ComAtprotoRepoListMissingBlobs.Params;
 		output: ComAtprotoRepoListMissingBlobs.Output;
+	};
+	'com.atproto.repo.listRecords': {
+		params: ComAtprotoRepoListRecords.Params;
+		output: ComAtprotoRepoListRecords.Output;
 	};
 	'com.atproto.server.checkAccountStatus': {
 		output: ComAtprotoServerCheckAccountStatus.Output;
 	};
 	'com.atproto.server.describeServer': {
 		output: ComAtprotoServerDescribeServer.Output;
+	};
+	'com.atproto.server.getAccountInviteCodes': {
+		params: ComAtprotoServerGetAccountInviteCodes.Params;
+		output: ComAtprotoServerGetAccountInviteCodes.Output;
 	};
 	'com.atproto.server.getServiceAuth': {
 		params: ComAtprotoServerGetServiceAuth.Params;
@@ -3751,10 +3755,6 @@ export declare interface Queries {
 	};
 	'com.atproto.server.listAppPasswords': {
 		output: ComAtprotoServerListAppPasswords.Output;
-	};
-	'com.atproto.server.getAccountInviteCodes': {
-		params: ComAtprotoServerGetAccountInviteCodes.Params;
-		output: ComAtprotoServerGetAccountInviteCodes.Output;
 	};
 	'com.atproto.sync.getBlob': {
 		params: ComAtprotoSyncGetBlob.Params;
@@ -3768,13 +3768,13 @@ export declare interface Queries {
 		params: ComAtprotoSyncGetCheckout.Params;
 		output: ComAtprotoSyncGetCheckout.Output;
 	};
-	'com.atproto.sync.getLatestCommit': {
-		params: ComAtprotoSyncGetLatestCommit.Params;
-		output: ComAtprotoSyncGetLatestCommit.Output;
-	};
 	'com.atproto.sync.getHead': {
 		params: ComAtprotoSyncGetHead.Params;
 		output: ComAtprotoSyncGetHead.Output;
+	};
+	'com.atproto.sync.getLatestCommit': {
+		params: ComAtprotoSyncGetLatestCommit.Params;
+		output: ComAtprotoSyncGetLatestCommit.Output;
 	};
 	'com.atproto.sync.getRecord': {
 		params: ComAtprotoSyncGetRecord.Params;
@@ -3839,6 +3839,10 @@ export declare interface Procedures {
 	'com.atproto.admin.disableInviteCodes': {
 		input: ComAtprotoAdminDisableInviteCodes.Input;
 	};
+	'com.atproto.admin.emitModerationEvent': {
+		input: ComAtprotoAdminEmitModerationEvent.Input;
+		output: ComAtprotoAdminEmitModerationEvent.Output;
+	};
 	'com.atproto.admin.enableAccountInvites': {
 		input: ComAtprotoAdminEnableAccountInvites.Input;
 	};
@@ -3849,6 +3853,9 @@ export declare interface Procedures {
 	'com.atproto.admin.updateAccountEmail': {
 		input: ComAtprotoAdminUpdateAccountEmail.Input;
 	};
+	'com.atproto.admin.updateAccountHandle': {
+		input: ComAtprotoAdminUpdateAccountHandle.Input;
+	};
 	'com.atproto.admin.updateAccountPassword': {
 		input: ComAtprotoAdminUpdateAccountPassword.Input;
 	};
@@ -3856,22 +3863,15 @@ export declare interface Procedures {
 		input: ComAtprotoAdminUpdateCommunicationTemplate.Input;
 		output: ComAtprotoAdminUpdateCommunicationTemplate.Output;
 	};
-	'com.atproto.admin.emitModerationEvent': {
-		input: ComAtprotoAdminEmitModerationEvent.Input;
-		output: ComAtprotoAdminEmitModerationEvent.Output;
-	};
-	'com.atproto.admin.updateAccountHandle': {
-		input: ComAtprotoAdminUpdateAccountHandle.Input;
-	};
 	'com.atproto.admin.updateSubjectStatus': {
 		input: ComAtprotoAdminUpdateSubjectStatus.Input;
 		output: ComAtprotoAdminUpdateSubjectStatus.Output;
 	};
+	'com.atproto.identity.requestPlcOperationSignature': {};
 	'com.atproto.identity.signPlcOperation': {
 		input: ComAtprotoIdentitySignPlcOperation.Input;
 		output: ComAtprotoIdentitySignPlcOperation.Output;
 	};
-	'com.atproto.identity.requestPlcOperationSignature': {};
 	'com.atproto.identity.submitPlcOperation': {
 		input: ComAtprotoIdentitySubmitPlcOperation.Input;
 	};
@@ -3911,15 +3911,6 @@ export declare interface Procedures {
 		input: ComAtprotoServerCreateAccount.Input;
 		output: ComAtprotoServerCreateAccount.Output;
 	};
-	'com.atproto.server.createInviteCodes': {
-		input: ComAtprotoServerCreateInviteCodes.Input;
-		output: ComAtprotoServerCreateInviteCodes.Output;
-	};
-	'com.atproto.server.createSession': {
-		input: ComAtprotoServerCreateSession.Input;
-		output: ComAtprotoServerCreateSession.Output;
-	};
-	'com.atproto.server.deleteSession': {};
 	'com.atproto.server.createAppPassword': {
 		input: ComAtprotoServerCreateAppPassword.Input;
 		output: ComAtprotoServerCreateAppPassword.Output;
@@ -3928,12 +3919,25 @@ export declare interface Procedures {
 		input: ComAtprotoServerCreateInviteCode.Input;
 		output: ComAtprotoServerCreateInviteCode.Output;
 	};
+	'com.atproto.server.createInviteCodes': {
+		input: ComAtprotoServerCreateInviteCodes.Input;
+		output: ComAtprotoServerCreateInviteCodes.Output;
+	};
+	'com.atproto.server.createSession': {
+		input: ComAtprotoServerCreateSession.Input;
+		output: ComAtprotoServerCreateSession.Output;
+	};
 	'com.atproto.server.deactivateAccount': {
 		input: ComAtprotoServerDeactivateAccount.Input;
 	};
+	'com.atproto.server.deleteAccount': {
+		input: ComAtprotoServerDeleteAccount.Input;
+	};
+	'com.atproto.server.deleteSession': {};
 	'com.atproto.server.refreshSession': {
 		output: ComAtprotoServerRefreshSession.Output;
 	};
+	'com.atproto.server.requestAccountDelete': {};
 	'com.atproto.server.requestEmailConfirmation': {};
 	'com.atproto.server.requestEmailUpdate': {
 		output: ComAtprotoServerRequestEmailUpdate.Output;
@@ -3941,8 +3945,9 @@ export declare interface Procedures {
 	'com.atproto.server.requestPasswordReset': {
 		input: ComAtprotoServerRequestPasswordReset.Input;
 	};
-	'com.atproto.server.deleteAccount': {
-		input: ComAtprotoServerDeleteAccount.Input;
+	'com.atproto.server.reserveSigningKey': {
+		input: ComAtprotoServerReserveSigningKey.Input;
+		output: ComAtprotoServerReserveSigningKey.Output;
 	};
 	'com.atproto.server.resetPassword': {
 		input: ComAtprotoServerResetPassword.Input;
@@ -3952,11 +3957,6 @@ export declare interface Procedures {
 	};
 	'com.atproto.server.updateEmail': {
 		input: ComAtprotoServerUpdateEmail.Input;
-	};
-	'com.atproto.server.requestAccountDelete': {};
-	'com.atproto.server.reserveSigningKey': {
-		input: ComAtprotoServerReserveSigningKey.Input;
-		output: ComAtprotoServerReserveSigningKey.Output;
 	};
 	'com.atproto.sync.notifyOfUpdate': {
 		input: ComAtprotoSyncNotifyOfUpdate.Input;
