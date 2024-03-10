@@ -1,17 +1,41 @@
-const b64DecodeUnicode = (str: string): string => {
-	return decodeURIComponent(
-		atob(str).replace(/(.)/g, (_m, p) => {
-			let code = p.charCodeAt(0).toString(16).toUpperCase();
+/**
+ * @module
+ * JWT decoding utilities for session resumption checks.
+ */
 
-			if (code.length < 2) {
-				code = '0' + code;
-			}
+/**
+ * Decodes a JWT token
+ * @param token The token string
+ * @returns JSON object from the token
+ */
+export const decodeJwt = (token: string): unknown => {
+	const pos = 1;
+	const part = token.split('.')[1];
 
-			return '%' + code;
-		}),
-	);
+	let decoded: string;
+
+	if (typeof part !== 'string') {
+		throw new Error('invalid token: missing part ' + (pos + 1));
+	}
+
+	try {
+		decoded = base64UrlDecode(part);
+	} catch (e) {
+		throw new Error('invalid token: invalid b64 for part ' + (pos + 1) + ' (' + (e as Error).message + ')');
+	}
+
+	try {
+		return JSON.parse(decoded);
+	} catch (e) {
+		throw new Error('invalid token: invalid json for part ' + (pos + 1) + ' (' + (e as Error).message + ')');
+	}
 };
 
+/**
+ * Decodes a URL-safe Base64 string
+ * @param str URL-safe Base64 that needed to be decoded
+ * @returns The actual string
+ */
 export const base64UrlDecode = (str: string): string => {
 	let output = str.replace(/-/g, '+').replace(/_/g, '/');
 
@@ -35,25 +59,16 @@ export const base64UrlDecode = (str: string): string => {
 	}
 };
 
-export const decodeJwt = (token: string): unknown => {
-	const pos = 1;
-	const part = token.split('.')[1];
+const b64DecodeUnicode = (str: string): string => {
+	return decodeURIComponent(
+		atob(str).replace(/(.)/g, (_m, p) => {
+			let code = p.charCodeAt(0).toString(16).toUpperCase();
 
-	let decoded: string;
+			if (code.length < 2) {
+				code = '0' + code;
+			}
 
-	if (typeof part !== 'string') {
-		throw new Error('invalid token: missing part ' + (pos + 1));
-	}
-
-	try {
-		decoded = base64UrlDecode(part);
-	} catch (e) {
-		throw new Error('invalid token: invalid b64 for part ' + (pos + 1) + ' (' + (e as Error).message + ')');
-	}
-
-	try {
-		return JSON.parse(decoded);
-	} catch (e) {
-		throw new Error('invalid token: invalid json for part ' + (pos + 1) + ' (' + (e as Error).message + ')');
-	}
+			return '%' + code;
+		}),
+	);
 };

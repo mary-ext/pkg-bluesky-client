@@ -1,28 +1,49 @@
+/**
+ * @module
+ * Handles the actual XRPC client functionalities.
+ */
+
 // deno-lint-ignore-file no-explicit-any ban-types
 
 export type Headers = Record<string, string>;
 
+/** Possible response status from an XRPC service, status <100 is used for the library itself. */
 export const enum ResponseType {
+	/** Unknown error from the library */
 	Unknown = 1,
+	/** The server returned an invalid response */
 	InvalidResponse = 2,
-	IllegalMiddleware = 3,
 
+	/** Successful response from the service */
 	Success = 200,
+	/** Request was considered invalid by the service */
 	InvalidRequest = 400,
+	/** Service requires an authentication token */
 	AuthRequired = 401,
+	/** Request is forbidden by the service */
 	Forbidden = 403,
+	/** Not a XRPC service */
 	XRPCNotSupported = 404,
+	/** Payload is considered too large by the service */
 	PayloadTooLarge = 413,
+	/** Ratelimit was exceeded */
 	RateLimitExceeded = 429,
+	/** Internal server error */
 	InternalServerError = 500,
+	/** Method hasn't been implemented */
 	MethodNotImplemented = 501,
+	/** Failure by an upstream service */
 	UpstreamFailure = 502,
+	/** Not enough resources */
 	NotEnoughResouces = 503,
+	/** Timeout from upstream service */
 	UpstreamTimeout = 504,
 }
 
+/** Request type, either query (GET) or procedure (POST) */
 export type RequestType = 'get' | 'post';
 
+/** XRPC that gets passed around middlewares and eventually to the service. */
 export interface XRPCRequest {
 	service: string;
 	type: RequestType;
@@ -34,6 +55,7 @@ export interface XRPCRequest {
 	signal?: AbortSignal;
 }
 
+/** Response from XRPC service */
 export class XRPCResponse<T = any> {
 	constructor(
 		public data: T,
@@ -41,6 +63,7 @@ export class XRPCResponse<T = any> {
 	) {}
 }
 
+/** Options for constructing an XRPC error */
 export interface XRPCErrorOptions {
 	kind?: string;
 	message?: string;
@@ -48,12 +71,16 @@ export interface XRPCErrorOptions {
 	cause?: unknown;
 }
 
+/** Error coming from the XRPC service */
 export class XRPCError extends Error {
 	name = 'XRPCError';
 
+	/** Response status */
 	status: number;
-	kind?: string;
+	/** Response headers */
 	headers: Headers;
+	/** Error kind */
+	kind?: string;
 
 	constructor(status: number, { kind, message, headers, cause }: XRPCErrorOptions = {}) {
 		super(message || `Unspecified error message`, { cause });
@@ -64,19 +91,24 @@ export class XRPCError extends Error {
 	}
 }
 
+/** Response returned from middlewares and XRPC service */
 export interface XRPCFetchReturn {
 	status: number;
 	headers: Headers;
 	body: unknown;
 }
 
+/** Fetch function */
 export type XRPCFetch = (req: XRPCRequest) => Promise<XRPCFetchReturn>;
+/** Function that constructs a middleware */
 export type XRPCHook = (next: XRPCFetch) => XRPCFetch;
 
+/** Options for constructing an XRPC class */
 export interface XRPCOptions {
 	service: string;
 }
 
+/** Base options for the query/procedure request */
 interface BaseRPCOptions {
 	/** `Content-Type` encoding for the input, defaults to `application/json` if passing a JSON object */
 	encoding?: string;
@@ -86,6 +118,7 @@ interface BaseRPCOptions {
 	signal?: AbortSignal;
 }
 
+/** Options for the query/procedure request */
 export type RPCOptions<T> =
 	& BaseRPCOptions
 	& (T extends { params: any } ? { params: T['params'] } : {})
@@ -94,6 +127,7 @@ export type RPCOptions<T> =
 type OutputOf<T> = T extends { output: any } ? T['output'] : never;
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
+/** The client that sends out requests. */
 export class XRPC<Queries, Procedures> {
 	/** The service it should connect to */
 	service: string;

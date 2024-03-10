@@ -54,15 +54,15 @@ export interface AtpSessionData {
 	handle: string;
 	/** Account DID */
 	did: At.DID;
-	/** PDS endpoint found in the DID document, this will be used as the service URI if provided. */
+	/** PDS endpoint found in the DID document, this will be used as the service URI if provided */
 	pdsUri?: string;
-	/** Email address of the account, might not be available if on app password. */
+	/** Email address of the account, might not be available if on app password */
 	email?: string;
 	/** If the email address has been confirmed or not */
 	emailConfirmed?: boolean;
 }
 
-/** Additional constructor options */
+/** Additional options for constructing an authentication middleware */
 export interface BskyAuthOptions {
 	/** This function gets called if the session has been refreshed during an XRPC request */
 	onRefresh?: (session: AtpSessionData) => void;
@@ -70,9 +70,7 @@ export interface BskyAuthOptions {
 	onExpired?: (session: AtpSessionData) => void;
 }
 
-/**
- * Adds authentication middleware to BskyXRPC
- */
+/** Authentication/session management middleware */
 export class BskyAuth {
 	#rpc: BskyXRPC;
 	#refreshSessionPromise?: Promise<void>;
@@ -242,6 +240,7 @@ export class BskyAuth {
 	}
 }
 
+/** Login options */
 export interface AuthLoginOptions {
 	/** What account to login as, this could be domain handle, DID, or email address */
 	identifier: string;
@@ -249,11 +248,13 @@ export interface AuthLoginOptions {
 	password: string;
 }
 
+/** Options for constructing a moderation middleware */
 export interface BskyModOptions {
 	labelers?: At.DID[];
 	authorities?: At.DID[];
 }
 
+/** Moderation middleware, unstable. */
 export class BskyMod {
 	labelers: At.DID[];
 	authorities: At.DID[];
