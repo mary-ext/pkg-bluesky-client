@@ -8,7 +8,7 @@
 export type Headers = Record<string, string>;
 
 /** Possible response status from an XRPC service, status <100 is used for the library itself. */
-export const enum ResponseType {
+export enum ResponseType {
 	/** Unknown error from the library */
 	Unknown = 1,
 	/** The server returned an invalid response */
