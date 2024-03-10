@@ -230,7 +230,7 @@ export const isErrorResponse = (value: any, names?: string[]): value is ErrorRes
 	return (
 		(kindType === 'undefined' || kindType === 'string') &&
 		(messageType === 'undefined' || messageType === 'string') &&
-		(!names || names.includes(kindType))
+		(!names || names.includes(value.error))
 	);
 };
 
