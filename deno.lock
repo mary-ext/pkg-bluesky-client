@@ -4,8 +4,7 @@
     "specifiers": {
       "jsr:@david/dax@~0.39.2": "jsr:@david/dax@0.39.2",
       "jsr:@david/which@0.3": "jsr:@david/which@0.3.0",
-      "jsr:@mary/reader@^0.1.1": "jsr:@mary/reader@0.1.1",
-      "jsr:@mary/tar@^0.1.2": "jsr:@mary/tar@0.1.2",
+      "jsr:@mary/tar@^0.2.0": "jsr:@mary/tar@0.2.0",
       "jsr:@std/assert@^0.213.0": "jsr:@std/assert@0.213.1",
       "jsr:@std/assert@^0.219.1": "jsr:@std/assert@0.219.1",
       "jsr:@std/bytes@^0.213.0": "jsr:@std/bytes@0.213.1",
@@ -36,11 +35,8 @@
       "@david/which@0.3.0": {
         "integrity": "6bdb62c40ac90edcf328e854fa8103a8db21e7c326089cbe3c3a1cf7887d3204"
       },
-      "@mary/reader@0.1.1": {
-        "integrity": "1f78f5098c71951503af1ee5cf478d95a512d49a25c551a3b6773a90b6f68d1d"
-      },
-      "@mary/tar@0.1.2": {
-        "integrity": "4217c6c7f24e03ac340870ed4d809b55d3bb921995ee86a3549430fd9ef55691"
+      "@mary/tar@0.2.0": {
+        "integrity": "fac74906fc7faf051e700845bf2f0c5b64f1a4d6b7806195b22bcf9655fd405a"
       },
       "@std/assert@0.213.1": {
         "integrity": "24c28178b30c8e0782c18e8e94ea72b16282207569cdd10ffb9d1d26f2edebfe"

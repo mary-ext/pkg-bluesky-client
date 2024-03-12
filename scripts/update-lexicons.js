@@ -1,7 +1,6 @@
 import * as path from 'jsr:@std/path@^0.219.1';
 
-import { createIterableReader } from 'jsr:@mary/reader@^0.1.1';
-import { untar } from 'jsr:@mary/tar@^0.1.2';
+import { untar } from 'jsr:@mary/tar@^0.2.0';
 
 import $ from 'jsr:@david/dax@~0.39.2';
 
@@ -46,15 +45,12 @@ async function main() {
 		const ds = new DecompressionStream('gzip');
 		const stream = response.body.pipeThrough(ds);
 
-		const reader = createIterableReader(stream);
 		const promises = [];
 
 		console.log(`  reading`);
-		for await (const entry of untar(reader)) {
+		for await (const entry of untar(stream)) {
 			if (entry.type === 'file' && entry.name.startsWith(basename)) {
-				const buffer = new Uint8Array(entry.size);
-
-				await entry.read(buffer);
+				const buffer = new Uint8Array(await entry.arrayBuffer());
 
 				const promise = (async () => {
 					const name = entry.name.slice(basename.length);
