@@ -1668,145 +1668,11 @@ export declare namespace AppBskyUnspeccedSearchPostsSkeleton {
 	}
 }
 
-/** Administrative action to create a new, re-usable communication (email for now) template. */
-export declare namespace ComAtprotoAdminCreateCommunicationTemplate {
-	interface Params {}
-	interface Input {
-		/** Name of the template. */
-		name: string;
-		/** Content of the template, markdown supported, can contain variable placeholders. */
-		contentMarkdown: string;
-		/** Subject of the message, used in emails. */
-		subject: string;
-		/** DID of the user who is creating the template. */
-		createdBy?: At.DID;
-	}
-	type Output = ComAtprotoAdminDefs.CommunicationTemplateView;
-}
-
 export declare namespace ComAtprotoAdminDefs {
 	interface StatusAttr {
 		[Brand.Type]?: 'com.atproto.admin.defs#statusAttr';
 		applied: boolean;
 		ref?: string;
-	}
-	interface ModEventView {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventView';
-		id: number;
-		event: Brand.Union<
-			| ModEventTakedown
-			| ModEventReverseTakedown
-			| ModEventComment
-			| ModEventReport
-			| ModEventLabel
-			| ModEventAcknowledge
-			| ModEventEscalate
-			| ModEventMute
-			| ModEventEmail
-			| ModEventResolveAppeal
-			| ModEventDivert
-		>;
-		subject: Brand.Union<RepoRef | ComAtprotoRepoStrongRef.Main>;
-		subjectBlobCids: (string)[];
-		createdBy: At.DID;
-		createdAt: string;
-		creatorHandle?: string;
-		subjectHandle?: string;
-	}
-	interface ModEventViewDetail {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventViewDetail';
-		id: number;
-		event: Brand.Union<
-			| ModEventTakedown
-			| ModEventReverseTakedown
-			| ModEventComment
-			| ModEventReport
-			| ModEventLabel
-			| ModEventAcknowledge
-			| ModEventEscalate
-			| ModEventMute
-			| ModEventEmail
-			| ModEventResolveAppeal
-			| ModEventDivert
-		>;
-		subject: Brand.Union<RepoView | RepoViewNotFound | RecordView | RecordViewNotFound>;
-		subjectBlobs: (BlobView)[];
-		createdBy: At.DID;
-		createdAt: string;
-	}
-	interface ReportView {
-		[Brand.Type]?: 'com.atproto.admin.defs#reportView';
-		id: number;
-		reasonType: ComAtprotoModerationDefs.ReasonType;
-		comment?: string;
-		subjectRepoHandle?: string;
-		subject: Brand.Union<RepoRef | ComAtprotoRepoStrongRef.Main>;
-		reportedBy: At.DID;
-		createdAt: string;
-		resolvedByActionIds: (number)[];
-	}
-	interface SubjectStatusView {
-		[Brand.Type]?: 'com.atproto.admin.defs#subjectStatusView';
-		id: number;
-		subject: Brand.Union<RepoRef | ComAtprotoRepoStrongRef.Main>;
-		subjectBlobCids?: (At.CID)[];
-		subjectRepoHandle?: string;
-		/** Timestamp referencing when the last update was made to the moderation status of the subject */
-		updatedAt: string;
-		/** Timestamp referencing the first moderation status impacting event was emitted on the subject */
-		createdAt: string;
-		reviewState: SubjectReviewState;
-		/** Sticky comment on the subject. */
-		comment?: string;
-		muteUntil?: string;
-		lastReviewedBy?: At.DID;
-		lastReviewedAt?: string;
-		lastReportedAt?: string;
-		/** Timestamp referencing when the author of the subject appealed a moderation action */
-		lastAppealedAt?: string;
-		takendown?: boolean;
-		/** True indicates that the a previously taken moderator action was appealed against, by the author of the content. False indicates last appeal was resolved by moderators. */
-		appealed?: boolean;
-		suspendUntil?: string;
-		tags?: (string)[];
-	}
-	interface ReportViewDetail {
-		[Brand.Type]?: 'com.atproto.admin.defs#reportViewDetail';
-		id: number;
-		reasonType: ComAtprotoModerationDefs.ReasonType;
-		comment?: string;
-		subject: Brand.Union<RepoView | RepoViewNotFound | RecordView | RecordViewNotFound>;
-		subjectStatus?: ComAtprotoAdminDefs.SubjectStatusView;
-		reportedBy: At.DID;
-		createdAt: string;
-		resolvedByActions: (ComAtprotoAdminDefs.ModEventView)[];
-	}
-	interface RepoView {
-		[Brand.Type]?: 'com.atproto.admin.defs#repoView';
-		did: At.DID;
-		handle: At.Handle;
-		email?: string;
-		relatedRecords: (unknown)[];
-		indexedAt: string;
-		moderation: Moderation;
-		invitedBy?: ComAtprotoServerDefs.InviteCode;
-		invitesDisabled?: boolean;
-		inviteNote?: string;
-	}
-	interface RepoViewDetail {
-		[Brand.Type]?: 'com.atproto.admin.defs#repoViewDetail';
-		did: At.DID;
-		handle: At.Handle;
-		email?: string;
-		relatedRecords: (unknown)[];
-		indexedAt: string;
-		moderation: ModerationDetail;
-		labels?: (ComAtprotoLabelDefs.Label)[];
-		invitedBy?: ComAtprotoServerDefs.InviteCode;
-		invites?: (ComAtprotoServerDefs.InviteCode)[];
-		invitesDisabled?: boolean;
-		inviteNote?: string;
-		emailConfirmedAt?: string;
 	}
 	interface AccountView {
 		[Brand.Type]?: 'com.atproto.admin.defs#accountView';
@@ -1821,10 +1687,6 @@ export declare namespace ComAtprotoAdminDefs {
 		emailConfirmedAt?: string;
 		inviteNote?: string;
 	}
-	interface RepoViewNotFound {
-		[Brand.Type]?: 'com.atproto.admin.defs#repoViewNotFound';
-		did: At.DID;
-	}
 	interface RepoRef {
 		[Brand.Type]?: 'com.atproto.admin.defs#repoRef';
 		did: At.DID;
@@ -1835,169 +1697,6 @@ export declare namespace ComAtprotoAdminDefs {
 		cid: At.CID;
 		recordUri?: At.Uri;
 	}
-	interface RecordView {
-		[Brand.Type]?: 'com.atproto.admin.defs#recordView';
-		uri: At.Uri;
-		cid: At.CID;
-		value: unknown;
-		blobCids: (At.CID)[];
-		indexedAt: string;
-		moderation: Moderation;
-		repo: RepoView;
-	}
-	interface RecordViewDetail {
-		[Brand.Type]?: 'com.atproto.admin.defs#recordViewDetail';
-		uri: At.Uri;
-		cid: At.CID;
-		value: unknown;
-		blobs: (BlobView)[];
-		labels?: (ComAtprotoLabelDefs.Label)[];
-		indexedAt: string;
-		moderation: ModerationDetail;
-		repo: RepoView;
-	}
-	interface RecordViewNotFound {
-		[Brand.Type]?: 'com.atproto.admin.defs#recordViewNotFound';
-		uri: At.Uri;
-	}
-	interface Moderation {
-		[Brand.Type]?: 'com.atproto.admin.defs#moderation';
-		subjectStatus?: SubjectStatusView;
-	}
-	interface ModerationDetail {
-		[Brand.Type]?: 'com.atproto.admin.defs#moderationDetail';
-		subjectStatus?: SubjectStatusView;
-	}
-	interface BlobView {
-		[Brand.Type]?: 'com.atproto.admin.defs#blobView';
-		cid: At.CID;
-		mimeType: string;
-		size: number;
-		createdAt: string;
-		details?: Brand.Union<ImageDetails | VideoDetails>;
-		moderation?: Moderation;
-	}
-	interface ImageDetails {
-		[Brand.Type]?: 'com.atproto.admin.defs#imageDetails';
-		width: number;
-		height: number;
-	}
-	interface VideoDetails {
-		[Brand.Type]?: 'com.atproto.admin.defs#videoDetails';
-		width: number;
-		height: number;
-		length: number;
-	}
-	type SubjectReviewState =
-		| '#reviewOpen'
-		| '#reviewEscalated'
-		| '#reviewClosed'
-		| '#reviewNone'
-		| (string & {});
-	type ReviewOpen = 'com.atproto.admin.defs#reviewOpen';
-	type ReviewEscalated = 'com.atproto.admin.defs#reviewEscalated';
-	type ReviewClosed = 'com.atproto.admin.defs#reviewClosed';
-	type ReviewNone = 'com.atproto.admin.defs#reviewNone';
-	/** Take down a subject permanently or temporarily */
-	interface ModEventTakedown {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventTakedown';
-		comment?: string;
-		/** Indicates how long the takedown should be in effect before automatically expiring. */
-		durationInHours?: number;
-	}
-	/** Revert take down action on a subject */
-	interface ModEventReverseTakedown {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventReverseTakedown';
-		/** Describe reasoning behind the reversal. */
-		comment?: string;
-	}
-	/** Resolve appeal on a subject */
-	interface ModEventResolveAppeal {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventResolveAppeal';
-		/** Describe resolution. */
-		comment?: string;
-	}
-	/** Add a comment to a subject */
-	interface ModEventComment {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventComment';
-		comment: string;
-		/** Make the comment persistent on the subject */
-		sticky?: boolean;
-	}
-	/** Report a subject */
-	interface ModEventReport {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventReport';
-		comment?: string;
-		reportType: ComAtprotoModerationDefs.ReasonType;
-	}
-	/** Apply/Negate labels on a subject */
-	interface ModEventLabel {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventLabel';
-		comment?: string;
-		createLabelVals: (string)[];
-		negateLabelVals: (string)[];
-	}
-	interface ModEventAcknowledge {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventAcknowledge';
-		comment?: string;
-	}
-	interface ModEventEscalate {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventEscalate';
-		comment?: string;
-	}
-	/** Mute incoming reports on a subject */
-	interface ModEventMute {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventMute';
-		comment?: string;
-		/** Indicates how long the subject should remain muted. */
-		durationInHours: number;
-	}
-	/** Unmute action on a subject */
-	interface ModEventUnmute {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventUnmute';
-		/** Describe reasoning behind the reversal. */
-		comment?: string;
-	}
-	/** Keep a log of outgoing email to a user */
-	interface ModEventEmail {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventEmail';
-		/** The subject line of the email sent to the user. */
-		subjectLine: string;
-		/** The content of the email sent to the user. */
-		content?: string;
-		/** Additional comment about the outgoing comm. */
-		comment?: string;
-	}
-	/** Add/Remove a tag on a subject */
-	interface ModEventTag {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventTag';
-		/** Tags to be added to the subject. If already exists, won't be duplicated. */
-		add: (string)[];
-		/** Tags to be removed to the subject. Ignores a tag If it doesn't exist, won't be duplicated. */
-		remove: (string)[];
-		/** Additional comment about added/removed tags. */
-		comment?: string;
-	}
-	/** Divert a record's blobs to a 3rd party service for further scanning/tagging */
-	interface ModEventDivert {
-		[Brand.Type]?: 'com.atproto.admin.defs#modEventDivert';
-		comment?: string;
-	}
-	interface CommunicationTemplateView {
-		[Brand.Type]?: 'com.atproto.admin.defs#communicationTemplateView';
-		id: string;
-		/** Name of the template. */
-		name: string;
-		/** Content of the template, can contain markdown and variable placeholders. */
-		subject?: string;
-		/** Subject of the message, used in emails. */
-		contentMarkdown: string;
-		disabled: boolean;
-		/** DID of the user who last updated the template. */
-		lastUpdatedBy: At.DID;
-		createdAt: string;
-		updatedAt: string;
-	}
 }
 
 /** Delete a user account as an administrator. */
@@ -2005,15 +1704,6 @@ export declare namespace ComAtprotoAdminDeleteAccount {
 	interface Params {}
 	interface Input {
 		did: At.DID;
-	}
-	type Output = undefined;
-}
-
-/** Delete a communication template. */
-export declare namespace ComAtprotoAdminDeleteCommunicationTemplate {
-	interface Params {}
-	interface Input {
-		id: string;
 	}
 	type Output = undefined;
 }
@@ -2037,33 +1727,6 @@ export declare namespace ComAtprotoAdminDisableInviteCodes {
 		accounts?: (string)[];
 	}
 	type Output = undefined;
-}
-
-/** Take a moderation action on an actor. */
-export declare namespace ComAtprotoAdminEmitModerationEvent {
-	interface Params {}
-	interface Input {
-		event: Brand.Union<
-			| ComAtprotoAdminDefs.ModEventTakedown
-			| ComAtprotoAdminDefs.ModEventAcknowledge
-			| ComAtprotoAdminDefs.ModEventEscalate
-			| ComAtprotoAdminDefs.ModEventComment
-			| ComAtprotoAdminDefs.ModEventLabel
-			| ComAtprotoAdminDefs.ModEventReport
-			| ComAtprotoAdminDefs.ModEventMute
-			| ComAtprotoAdminDefs.ModEventReverseTakedown
-			| ComAtprotoAdminDefs.ModEventUnmute
-			| ComAtprotoAdminDefs.ModEventEmail
-			| ComAtprotoAdminDefs.ModEventTag
-		>;
-		subject: Brand.Union<ComAtprotoAdminDefs.RepoRef | ComAtprotoRepoStrongRef.Main>;
-		subjectBlobCids?: (At.CID)[];
-		createdBy: At.DID;
-	}
-	type Output = ComAtprotoAdminDefs.ModEventView;
-	interface Errors {
-		SubjectHasAction: {};
-	}
 }
 
 /** Re-enable an account's ability to receive invite codes. */
@@ -2117,40 +1780,6 @@ export declare namespace ComAtprotoAdminGetInviteCodes {
 	}
 }
 
-/** Get details about a moderation event. */
-export declare namespace ComAtprotoAdminGetModerationEvent {
-	interface Params {
-		id: number;
-	}
-	type Input = undefined;
-	type Output = ComAtprotoAdminDefs.ModEventViewDetail;
-}
-
-/** Get details about a record. */
-export declare namespace ComAtprotoAdminGetRecord {
-	interface Params {
-		uri: At.Uri;
-		cid?: At.CID;
-	}
-	type Input = undefined;
-	type Output = ComAtprotoAdminDefs.RecordViewDetail;
-	interface Errors {
-		RecordNotFound: {};
-	}
-}
-
-/** Get details about a repository. */
-export declare namespace ComAtprotoAdminGetRepo {
-	interface Params {
-		did: At.DID;
-	}
-	type Input = undefined;
-	type Output = ComAtprotoAdminDefs.RepoViewDetail;
-	interface Errors {
-		RepoNotFound: {};
-	}
-}
-
 /** Get the service-specific admin status of a subject (account, record, or blob). */
 export declare namespace ComAtprotoAdminGetSubjectStatus {
 	interface Params {
@@ -2164,134 +1793,6 @@ export declare namespace ComAtprotoAdminGetSubjectStatus {
 			ComAtprotoAdminDefs.RepoRef | ComAtprotoRepoStrongRef.Main | ComAtprotoAdminDefs.RepoBlobRef
 		>;
 		takedown?: ComAtprotoAdminDefs.StatusAttr;
-	}
-}
-
-/** Get list of all communication templates. */
-export declare namespace ComAtprotoAdminListCommunicationTemplates {
-	interface Params {}
-	type Input = undefined;
-	interface Output {
-		communicationTemplates: (ComAtprotoAdminDefs.CommunicationTemplateView)[];
-	}
-}
-
-/** List moderation events related to a subject. */
-export declare namespace ComAtprotoAdminQueryModerationEvents {
-	interface Params {
-		/** The types of events (fully qualified string in the format of com.atproto.admin#modEvent<name>) to filter by. If not specified, all events are returned. */
-		types?: (string)[];
-		createdBy?: At.DID;
-		/**
-		 * Sort direction for the events. Defaults to descending order of created at timestamp.
-		 * @default "desc"
-		 */
-		sortDirection?: 'asc' | 'desc';
-		/** Retrieve events created after a given timestamp */
-		createdAfter?: string;
-		/** Retrieve events created before a given timestamp */
-		createdBefore?: string;
-		subject?: string;
-		/**
-		 * If true, events on all record types (posts, lists, profile etc.) owned by the did are returned
-		 * @default false
-		 */
-		includeAllUserRecords?: boolean;
-		/**
-		 * Minimum: 1 \
-		 * Maximum: 100
-		 * @default 50
-		 */
-		limit?: number;
-		/** If true, only events with comments are returned */
-		hasComment?: boolean;
-		/** If specified, only events with comments containing the keyword are returned */
-		comment?: string;
-		/** If specified, only events where all of these labels were added are returned */
-		addedLabels?: (string)[];
-		/** If specified, only events where all of these labels were removed are returned */
-		removedLabels?: (string)[];
-		/** If specified, only events where all of these tags were added are returned */
-		addedTags?: (string)[];
-		/** If specified, only events where all of these tags were removed are returned */
-		removedTags?: (string)[];
-		reportTypes?: (string)[];
-		cursor?: string;
-	}
-	type Input = undefined;
-	interface Output {
-		cursor?: string;
-		events: (ComAtprotoAdminDefs.ModEventView)[];
-	}
-}
-
-/** View moderation statuses of subjects (record or repo). */
-export declare namespace ComAtprotoAdminQueryModerationStatuses {
-	interface Params {
-		subject?: string;
-		/** Search subjects by keyword from comments */
-		comment?: string;
-		/** Search subjects reported after a given timestamp */
-		reportedAfter?: string;
-		/** Search subjects reported before a given timestamp */
-		reportedBefore?: string;
-		/** Search subjects reviewed after a given timestamp */
-		reviewedAfter?: string;
-		/** Search subjects reviewed before a given timestamp */
-		reviewedBefore?: string;
-		/** By default, we don't include muted subjects in the results. Set this to true to include them. */
-		includeMuted?: boolean;
-		/** Specify when fetching subjects in a certain state */
-		reviewState?: string;
-		ignoreSubjects?: (string)[];
-		/** Get all subject statuses that were reviewed by a specific moderator */
-		lastReviewedBy?: At.DID;
-		/** @default "lastReportedAt" */
-		sortField?: 'lastReviewedAt' | 'lastReportedAt';
-		/** @default "desc" */
-		sortDirection?: 'asc' | 'desc';
-		/** Get subjects that were taken down */
-		takendown?: boolean;
-		/** Get subjects in unresolved appealed status */
-		appealed?: boolean;
-		/**
-		 * Minimum: 1 \
-		 * Maximum: 100
-		 * @default 50
-		 */
-		limit?: number;
-		tags?: (string)[];
-		excludeTags?: (string)[];
-		cursor?: string;
-	}
-	type Input = undefined;
-	interface Output {
-		cursor?: string;
-		subjectStatuses: (ComAtprotoAdminDefs.SubjectStatusView)[];
-	}
-}
-
-/** Find repositories based on a search term. */
-export declare namespace ComAtprotoAdminSearchRepos {
-	interface Params {
-		/**
-		 * DEPRECATED: use 'q' instead
-		 * @deprecated
-		 */
-		term?: string;
-		q?: string;
-		/**
-		 * Minimum: 1 \
-		 * Maximum: 100
-		 * @default 50
-		 */
-		limit?: number;
-		cursor?: string;
-	}
-	type Input = undefined;
-	interface Output {
-		cursor?: string;
-		repos: (ComAtprotoAdminDefs.RepoView)[];
 	}
 }
 
@@ -2340,25 +1841,6 @@ export declare namespace ComAtprotoAdminUpdateAccountPassword {
 		password: string;
 	}
 	type Output = undefined;
-}
-
-/** Administrative action to update an existing communication template. Allows passing partial fields to patch specific fields only. */
-export declare namespace ComAtprotoAdminUpdateCommunicationTemplate {
-	interface Params {}
-	interface Input {
-		/** ID of the template to be updated. */
-		id: string;
-		/** Name of the template. */
-		name?: string;
-		/** Content of the template, markdown supported, can contain variable placeholders. */
-		contentMarkdown?: string;
-		/** Subject of the message, used in emails. */
-		subject?: string;
-		/** DID of the user who is updating the template. */
-		updatedBy?: At.DID;
-		disabled?: boolean;
-	}
-	type Output = ComAtprotoAdminDefs.CommunicationTemplateView;
 }
 
 /** Update the service-specific admin status of a subject (account, record, or blob). */
@@ -3542,6 +3024,508 @@ export declare namespace ComAtprotoTempRequestPhoneVerification {
 	type Output = undefined;
 }
 
+/** Administrative action to create a new, re-usable communication (email for now) template. */
+export declare namespace ToolsOzoneCommunicationCreateTemplate {
+	interface Params {}
+	interface Input {
+		/** Name of the template. */
+		name: string;
+		/** Content of the template, markdown supported, can contain variable placeholders. */
+		contentMarkdown: string;
+		/** Subject of the message, used in emails. */
+		subject: string;
+		/** DID of the user who is creating the template. */
+		createdBy?: At.DID;
+	}
+	type Output = ToolsOzoneCommunicationDefs.TemplateView;
+}
+
+export declare namespace ToolsOzoneCommunicationDefs {
+	interface TemplateView {
+		[Brand.Type]?: 'tools.ozone.communication.defs#templateView';
+		id: string;
+		/** Name of the template. */
+		name: string;
+		/** Content of the template, can contain markdown and variable placeholders. */
+		subject?: string;
+		/** Subject of the message, used in emails. */
+		contentMarkdown: string;
+		disabled: boolean;
+		/** DID of the user who last updated the template. */
+		lastUpdatedBy: At.DID;
+		createdAt: string;
+		updatedAt: string;
+	}
+}
+
+/** Delete a communication template. */
+export declare namespace ToolsOzoneCommunicationDeleteTemplate {
+	interface Params {}
+	interface Input {
+		id: string;
+	}
+	type Output = undefined;
+}
+
+/** Get list of all communication templates. */
+export declare namespace ToolsOzoneCommunicationListTemplates {
+	interface Params {}
+	type Input = undefined;
+	interface Output {
+		communicationTemplates: (ToolsOzoneCommunicationDefs.TemplateView)[];
+	}
+}
+
+/** Administrative action to update an existing communication template. Allows passing partial fields to patch specific fields only. */
+export declare namespace ToolsOzoneCommunicationUpdateTemplate {
+	interface Params {}
+	interface Input {
+		/** ID of the template to be updated. */
+		id: string;
+		/** Name of the template. */
+		name?: string;
+		/** Content of the template, markdown supported, can contain variable placeholders. */
+		contentMarkdown?: string;
+		/** Subject of the message, used in emails. */
+		subject?: string;
+		/** DID of the user who is updating the template. */
+		updatedBy?: At.DID;
+		disabled?: boolean;
+	}
+	type Output = ToolsOzoneCommunicationDefs.TemplateView;
+}
+
+export declare namespace ToolsOzoneModerationDefs {
+	interface ModEventView {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventView';
+		id: number;
+		event: Brand.Union<
+			| ModEventTakedown
+			| ModEventReverseTakedown
+			| ModEventComment
+			| ModEventReport
+			| ModEventLabel
+			| ModEventAcknowledge
+			| ModEventEscalate
+			| ModEventMute
+			| ModEventEmail
+			| ModEventResolveAppeal
+			| ModEventDivert
+		>;
+		subject: Brand.Union<ComAtprotoAdminDefs.RepoRef | ComAtprotoRepoStrongRef.Main>;
+		subjectBlobCids: (string)[];
+		createdBy: At.DID;
+		createdAt: string;
+		creatorHandle?: string;
+		subjectHandle?: string;
+	}
+	interface ModEventViewDetail {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventViewDetail';
+		id: number;
+		event: Brand.Union<
+			| ModEventTakedown
+			| ModEventReverseTakedown
+			| ModEventComment
+			| ModEventReport
+			| ModEventLabel
+			| ModEventAcknowledge
+			| ModEventEscalate
+			| ModEventMute
+			| ModEventEmail
+			| ModEventResolveAppeal
+			| ModEventDivert
+		>;
+		subject: Brand.Union<RepoView | RepoViewNotFound | RecordView | RecordViewNotFound>;
+		subjectBlobs: (BlobView)[];
+		createdBy: At.DID;
+		createdAt: string;
+	}
+	interface SubjectStatusView {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#subjectStatusView';
+		id: number;
+		subject: Brand.Union<ComAtprotoAdminDefs.RepoRef | ComAtprotoRepoStrongRef.Main>;
+		subjectBlobCids?: (At.CID)[];
+		subjectRepoHandle?: string;
+		/** Timestamp referencing when the last update was made to the moderation status of the subject */
+		updatedAt: string;
+		/** Timestamp referencing the first moderation status impacting event was emitted on the subject */
+		createdAt: string;
+		reviewState: SubjectReviewState;
+		/** Sticky comment on the subject. */
+		comment?: string;
+		muteUntil?: string;
+		lastReviewedBy?: At.DID;
+		lastReviewedAt?: string;
+		lastReportedAt?: string;
+		/** Timestamp referencing when the author of the subject appealed a moderation action */
+		lastAppealedAt?: string;
+		takendown?: boolean;
+		/** True indicates that the a previously taken moderator action was appealed against, by the author of the content. False indicates last appeal was resolved by moderators. */
+		appealed?: boolean;
+		suspendUntil?: string;
+		tags?: (string)[];
+	}
+	type SubjectReviewState =
+		| '#reviewOpen'
+		| '#reviewEscalated'
+		| '#reviewClosed'
+		| '#reviewNone'
+		| (string & {});
+	type ReviewOpen = 'tools.ozone.moderation.defs#reviewOpen';
+	type ReviewEscalated = 'tools.ozone.moderation.defs#reviewEscalated';
+	type ReviewClosed = 'tools.ozone.moderation.defs#reviewClosed';
+	type ReviewNone = 'tools.ozone.moderation.defs#reviewNone';
+	/** Take down a subject permanently or temporarily */
+	interface ModEventTakedown {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventTakedown';
+		comment?: string;
+		/** Indicates how long the takedown should be in effect before automatically expiring. */
+		durationInHours?: number;
+	}
+	/** Revert take down action on a subject */
+	interface ModEventReverseTakedown {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventReverseTakedown';
+		/** Describe reasoning behind the reversal. */
+		comment?: string;
+	}
+	/** Resolve appeal on a subject */
+	interface ModEventResolveAppeal {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventResolveAppeal';
+		/** Describe resolution. */
+		comment?: string;
+	}
+	/** Add a comment to a subject */
+	interface ModEventComment {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventComment';
+		comment: string;
+		/** Make the comment persistent on the subject */
+		sticky?: boolean;
+	}
+	/** Report a subject */
+	interface ModEventReport {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventReport';
+		comment?: string;
+		reportType: ComAtprotoModerationDefs.ReasonType;
+	}
+	/** Apply/Negate labels on a subject */
+	interface ModEventLabel {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventLabel';
+		comment?: string;
+		createLabelVals: (string)[];
+		negateLabelVals: (string)[];
+	}
+	interface ModEventAcknowledge {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventAcknowledge';
+		comment?: string;
+	}
+	interface ModEventEscalate {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventEscalate';
+		comment?: string;
+	}
+	/** Mute incoming reports on a subject */
+	interface ModEventMute {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventMute';
+		comment?: string;
+		/** Indicates how long the subject should remain muted. */
+		durationInHours: number;
+	}
+	/** Unmute action on a subject */
+	interface ModEventUnmute {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventUnmute';
+		/** Describe reasoning behind the reversal. */
+		comment?: string;
+	}
+	/** Keep a log of outgoing email to a user */
+	interface ModEventEmail {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventEmail';
+		/** The subject line of the email sent to the user. */
+		subjectLine: string;
+		/** The content of the email sent to the user. */
+		content?: string;
+		/** Additional comment about the outgoing comm. */
+		comment?: string;
+	}
+	/** Divert a record's blobs to a 3rd party service for further scanning/tagging */
+	interface ModEventDivert {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventDivert';
+		comment?: string;
+	}
+	/** Add/Remove a tag on a subject */
+	interface ModEventTag {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#modEventTag';
+		/** Tags to be added to the subject. If already exists, won't be duplicated. */
+		add: (string)[];
+		/** Tags to be removed to the subject. Ignores a tag If it doesn't exist, won't be duplicated. */
+		remove: (string)[];
+		/** Additional comment about added/removed tags. */
+		comment?: string;
+	}
+	interface RepoView {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#repoView';
+		did: At.DID;
+		handle: At.Handle;
+		email?: string;
+		relatedRecords: (unknown)[];
+		indexedAt: string;
+		moderation: Moderation;
+		invitedBy?: ComAtprotoServerDefs.InviteCode;
+		invitesDisabled?: boolean;
+		inviteNote?: string;
+	}
+	interface RepoViewDetail {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#repoViewDetail';
+		did: At.DID;
+		handle: At.Handle;
+		email?: string;
+		relatedRecords: (unknown)[];
+		indexedAt: string;
+		moderation: ModerationDetail;
+		labels?: (ComAtprotoLabelDefs.Label)[];
+		invitedBy?: ComAtprotoServerDefs.InviteCode;
+		invites?: (ComAtprotoServerDefs.InviteCode)[];
+		invitesDisabled?: boolean;
+		inviteNote?: string;
+		emailConfirmedAt?: string;
+	}
+	interface RepoViewNotFound {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#repoViewNotFound';
+		did: At.DID;
+	}
+	interface RecordView {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#recordView';
+		uri: At.Uri;
+		cid: At.CID;
+		value: unknown;
+		blobCids: (At.CID)[];
+		indexedAt: string;
+		moderation: Moderation;
+		repo: RepoView;
+	}
+	interface RecordViewDetail {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#recordViewDetail';
+		uri: At.Uri;
+		cid: At.CID;
+		value: unknown;
+		blobs: (BlobView)[];
+		labels?: (ComAtprotoLabelDefs.Label)[];
+		indexedAt: string;
+		moderation: ModerationDetail;
+		repo: RepoView;
+	}
+	interface RecordViewNotFound {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#recordViewNotFound';
+		uri: At.Uri;
+	}
+	interface Moderation {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#moderation';
+		subjectStatus?: SubjectStatusView;
+	}
+	interface ModerationDetail {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#moderationDetail';
+		subjectStatus?: SubjectStatusView;
+	}
+	interface BlobView {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#blobView';
+		cid: At.CID;
+		mimeType: string;
+		size: number;
+		createdAt: string;
+		details?: Brand.Union<ImageDetails | VideoDetails>;
+		moderation?: Moderation;
+	}
+	interface ImageDetails {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#imageDetails';
+		width: number;
+		height: number;
+	}
+	interface VideoDetails {
+		[Brand.Type]?: 'tools.ozone.moderation.defs#videoDetails';
+		width: number;
+		height: number;
+		length: number;
+	}
+}
+
+/** Take a moderation action on an actor. */
+export declare namespace ToolsOzoneModerationEmitEvent {
+	interface Params {}
+	interface Input {
+		event: Brand.Union<
+			| ToolsOzoneModerationDefs.ModEventTakedown
+			| ToolsOzoneModerationDefs.ModEventAcknowledge
+			| ToolsOzoneModerationDefs.ModEventEscalate
+			| ToolsOzoneModerationDefs.ModEventComment
+			| ToolsOzoneModerationDefs.ModEventLabel
+			| ToolsOzoneModerationDefs.ModEventReport
+			| ToolsOzoneModerationDefs.ModEventMute
+			| ToolsOzoneModerationDefs.ModEventReverseTakedown
+			| ToolsOzoneModerationDefs.ModEventUnmute
+			| ToolsOzoneModerationDefs.ModEventEmail
+			| ToolsOzoneModerationDefs.ModEventTag
+		>;
+		subject: Brand.Union<ComAtprotoAdminDefs.RepoRef | ComAtprotoRepoStrongRef.Main>;
+		subjectBlobCids?: (At.CID)[];
+		createdBy: At.DID;
+	}
+	type Output = ToolsOzoneModerationDefs.ModEventView;
+	interface Errors {
+		SubjectHasAction: {};
+	}
+}
+
+/** Get details about a moderation event. */
+export declare namespace ToolsOzoneModerationGetEvent {
+	interface Params {
+		id: number;
+	}
+	type Input = undefined;
+	type Output = ToolsOzoneModerationDefs.ModEventViewDetail;
+}
+
+/** Get details about a record. */
+export declare namespace ToolsOzoneModerationGetRecord {
+	interface Params {
+		uri: At.Uri;
+		cid?: At.CID;
+	}
+	type Input = undefined;
+	type Output = ToolsOzoneModerationDefs.RecordViewDetail;
+	interface Errors {
+		RecordNotFound: {};
+	}
+}
+
+/** Get details about a repository. */
+export declare namespace ToolsOzoneModerationGetRepo {
+	interface Params {
+		did: At.DID;
+	}
+	type Input = undefined;
+	type Output = ToolsOzoneModerationDefs.RepoViewDetail;
+	interface Errors {
+		RepoNotFound: {};
+	}
+}
+
+/** List moderation events related to a subject. */
+export declare namespace ToolsOzoneModerationQueryEvents {
+	interface Params {
+		/** The types of events (fully qualified string in the format of tools.ozone.moderation.defs#modEvent<name>) to filter by. If not specified, all events are returned. */
+		types?: (string)[];
+		createdBy?: At.DID;
+		/**
+		 * Sort direction for the events. Defaults to descending order of created at timestamp.
+		 * @default "desc"
+		 */
+		sortDirection?: 'asc' | 'desc';
+		/** Retrieve events created after a given timestamp */
+		createdAfter?: string;
+		/** Retrieve events created before a given timestamp */
+		createdBefore?: string;
+		subject?: string;
+		/**
+		 * If true, events on all record types (posts, lists, profile etc.) owned by the did are returned
+		 * @default false
+		 */
+		includeAllUserRecords?: boolean;
+		/**
+		 * Minimum: 1 \
+		 * Maximum: 100
+		 * @default 50
+		 */
+		limit?: number;
+		/** If true, only events with comments are returned */
+		hasComment?: boolean;
+		/** If specified, only events with comments containing the keyword are returned */
+		comment?: string;
+		/** If specified, only events where all of these labels were added are returned */
+		addedLabels?: (string)[];
+		/** If specified, only events where all of these labels were removed are returned */
+		removedLabels?: (string)[];
+		/** If specified, only events where all of these tags were added are returned */
+		addedTags?: (string)[];
+		/** If specified, only events where all of these tags were removed are returned */
+		removedTags?: (string)[];
+		reportTypes?: (string)[];
+		cursor?: string;
+	}
+	type Input = undefined;
+	interface Output {
+		cursor?: string;
+		events: (ToolsOzoneModerationDefs.ModEventView)[];
+	}
+}
+
+/** View moderation statuses of subjects (record or repo). */
+export declare namespace ToolsOzoneModerationQueryStatuses {
+	interface Params {
+		subject?: string;
+		/** Search subjects by keyword from comments */
+		comment?: string;
+		/** Search subjects reported after a given timestamp */
+		reportedAfter?: string;
+		/** Search subjects reported before a given timestamp */
+		reportedBefore?: string;
+		/** Search subjects reviewed after a given timestamp */
+		reviewedAfter?: string;
+		/** Search subjects reviewed before a given timestamp */
+		reviewedBefore?: string;
+		/** By default, we don't include muted subjects in the results. Set this to true to include them. */
+		includeMuted?: boolean;
+		/** Specify when fetching subjects in a certain state */
+		reviewState?: string;
+		ignoreSubjects?: (string)[];
+		/** Get all subject statuses that were reviewed by a specific moderator */
+		lastReviewedBy?: At.DID;
+		/** @default "lastReportedAt" */
+		sortField?: 'lastReviewedAt' | 'lastReportedAt';
+		/** @default "desc" */
+		sortDirection?: 'asc' | 'desc';
+		/** Get subjects that were taken down */
+		takendown?: boolean;
+		/** Get subjects in unresolved appealed status */
+		appealed?: boolean;
+		/**
+		 * Minimum: 1 \
+		 * Maximum: 100
+		 * @default 50
+		 */
+		limit?: number;
+		tags?: (string)[];
+		excludeTags?: (string)[];
+		cursor?: string;
+	}
+	type Input = undefined;
+	interface Output {
+		cursor?: string;
+		subjectStatuses: (ToolsOzoneModerationDefs.SubjectStatusView)[];
+	}
+}
+
+/** Find repositories based on a search term. */
+export declare namespace ToolsOzoneModerationSearchRepos {
+	interface Params {
+		/**
+		 * DEPRECATED: use 'q' instead
+		 * @deprecated
+		 */
+		term?: string;
+		q?: string;
+		/**
+		 * Minimum: 1 \
+		 * Maximum: 100
+		 * @default 50
+		 */
+		limit?: number;
+		cursor?: string;
+	}
+	type Input = undefined;
+	interface Output {
+		cursor?: string;
+		repos: (ToolsOzoneModerationDefs.RepoView)[];
+	}
+}
+
 export declare interface Queries {
 	'app.bsky.actor.getPreferences': {
 		params: AppBskyActorGetPreferences.Params;
@@ -3710,36 +3694,9 @@ export declare interface Queries {
 		params: ComAtprotoAdminGetInviteCodes.Params;
 		output: ComAtprotoAdminGetInviteCodes.Output;
 	};
-	'com.atproto.admin.getModerationEvent': {
-		params: ComAtprotoAdminGetModerationEvent.Params;
-		output: ComAtprotoAdminGetModerationEvent.Output;
-	};
-	'com.atproto.admin.getRecord': {
-		params: ComAtprotoAdminGetRecord.Params;
-		output: ComAtprotoAdminGetRecord.Output;
-	};
-	'com.atproto.admin.getRepo': {
-		params: ComAtprotoAdminGetRepo.Params;
-		output: ComAtprotoAdminGetRepo.Output;
-	};
 	'com.atproto.admin.getSubjectStatus': {
 		params: ComAtprotoAdminGetSubjectStatus.Params;
 		output: ComAtprotoAdminGetSubjectStatus.Output;
-	};
-	'com.atproto.admin.listCommunicationTemplates': {
-		output: ComAtprotoAdminListCommunicationTemplates.Output;
-	};
-	'com.atproto.admin.queryModerationEvents': {
-		params: ComAtprotoAdminQueryModerationEvents.Params;
-		output: ComAtprotoAdminQueryModerationEvents.Output;
-	};
-	'com.atproto.admin.queryModerationStatuses': {
-		params: ComAtprotoAdminQueryModerationStatuses.Params;
-		output: ComAtprotoAdminQueryModerationStatuses.Output;
-	};
-	'com.atproto.admin.searchRepos': {
-		params: ComAtprotoAdminSearchRepos.Params;
-		output: ComAtprotoAdminSearchRepos.Output;
 	};
 	'com.atproto.identity.getRecommendedDidCredentials': {
 		output: ComAtprotoIdentityGetRecommendedDidCredentials.Output;
@@ -3831,6 +3788,33 @@ export declare interface Queries {
 		params: ComAtprotoTempFetchLabels.Params;
 		output: ComAtprotoTempFetchLabels.Output;
 	};
+	'tools.ozone.communication.listTemplates': {
+		output: ToolsOzoneCommunicationListTemplates.Output;
+	};
+	'tools.ozone.moderation.getEvent': {
+		params: ToolsOzoneModerationGetEvent.Params;
+		output: ToolsOzoneModerationGetEvent.Output;
+	};
+	'tools.ozone.moderation.getRecord': {
+		params: ToolsOzoneModerationGetRecord.Params;
+		output: ToolsOzoneModerationGetRecord.Output;
+	};
+	'tools.ozone.moderation.getRepo': {
+		params: ToolsOzoneModerationGetRepo.Params;
+		output: ToolsOzoneModerationGetRepo.Output;
+	};
+	'tools.ozone.moderation.queryEvents': {
+		params: ToolsOzoneModerationQueryEvents.Params;
+		output: ToolsOzoneModerationQueryEvents.Output;
+	};
+	'tools.ozone.moderation.queryStatuses': {
+		params: ToolsOzoneModerationQueryStatuses.Params;
+		output: ToolsOzoneModerationQueryStatuses.Output;
+	};
+	'tools.ozone.moderation.searchRepos': {
+		params: ToolsOzoneModerationSearchRepos.Params;
+		output: ToolsOzoneModerationSearchRepos.Output;
+	};
 }
 
 export declare interface Procedures {
@@ -3855,25 +3839,14 @@ export declare interface Procedures {
 	'app.bsky.notification.updateSeen': {
 		input: AppBskyNotificationUpdateSeen.Input;
 	};
-	'com.atproto.admin.createCommunicationTemplate': {
-		input: ComAtprotoAdminCreateCommunicationTemplate.Input;
-		output: ComAtprotoAdminCreateCommunicationTemplate.Output;
-	};
 	'com.atproto.admin.deleteAccount': {
 		input: ComAtprotoAdminDeleteAccount.Input;
-	};
-	'com.atproto.admin.deleteCommunicationTemplate': {
-		input: ComAtprotoAdminDeleteCommunicationTemplate.Input;
 	};
 	'com.atproto.admin.disableAccountInvites': {
 		input: ComAtprotoAdminDisableAccountInvites.Input;
 	};
 	'com.atproto.admin.disableInviteCodes': {
 		input: ComAtprotoAdminDisableInviteCodes.Input;
-	};
-	'com.atproto.admin.emitModerationEvent': {
-		input: ComAtprotoAdminEmitModerationEvent.Input;
-		output: ComAtprotoAdminEmitModerationEvent.Output;
 	};
 	'com.atproto.admin.enableAccountInvites': {
 		input: ComAtprotoAdminEnableAccountInvites.Input;
@@ -3890,10 +3863,6 @@ export declare interface Procedures {
 	};
 	'com.atproto.admin.updateAccountPassword': {
 		input: ComAtprotoAdminUpdateAccountPassword.Input;
-	};
-	'com.atproto.admin.updateCommunicationTemplate': {
-		input: ComAtprotoAdminUpdateCommunicationTemplate.Input;
-		output: ComAtprotoAdminUpdateCommunicationTemplate.Output;
 	};
 	'com.atproto.admin.updateSubjectStatus': {
 		input: ComAtprotoAdminUpdateSubjectStatus.Input;
@@ -3998,5 +3967,20 @@ export declare interface Procedures {
 	};
 	'com.atproto.temp.requestPhoneVerification': {
 		input: ComAtprotoTempRequestPhoneVerification.Input;
+	};
+	'tools.ozone.communication.createTemplate': {
+		input: ToolsOzoneCommunicationCreateTemplate.Input;
+		output: ToolsOzoneCommunicationCreateTemplate.Output;
+	};
+	'tools.ozone.communication.deleteTemplate': {
+		input: ToolsOzoneCommunicationDeleteTemplate.Input;
+	};
+	'tools.ozone.communication.updateTemplate': {
+		input: ToolsOzoneCommunicationUpdateTemplate.Input;
+		output: ToolsOzoneCommunicationUpdateTemplate.Output;
+	};
+	'tools.ozone.moderation.emitEvent': {
+		input: ToolsOzoneModerationEmitEvent.Input;
+		output: ToolsOzoneModerationEmitEvent.Output;
 	};
 }
