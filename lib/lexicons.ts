@@ -560,6 +560,7 @@ export declare namespace AppBskyFeedDefs {
 		avatar?: string;
 		/** Minimum: 0 */
 		likeCount?: number;
+		labels?: (ComAtprotoLabelDefs.Label)[];
 		viewer?: GeneratorViewerState;
 		indexedAt: string;
 	}
@@ -1085,6 +1086,7 @@ export declare namespace AppBskyGraphDefs {
 		name: string;
 		purpose: ListPurpose;
 		avatar?: string;
+		labels?: (ComAtprotoLabelDefs.Label)[];
 		viewer?: ListViewerState;
 		indexedAt?: string;
 	}
@@ -1106,6 +1108,7 @@ export declare namespace AppBskyGraphDefs {
 		description?: string;
 		descriptionFacets?: (AppBskyRichtextFacet.Main)[];
 		avatar?: string;
+		labels?: (ComAtprotoLabelDefs.Label)[];
 		viewer?: ListViewerState;
 		indexedAt: string;
 	}
@@ -1701,6 +1704,7 @@ export declare namespace ComAtprotoAdminDefs {
 			| ModEventMute
 			| ModEventEmail
 			| ModEventResolveAppeal
+			| ModEventDivert
 		>;
 		subject: Brand.Union<RepoRef | ComAtprotoRepoStrongRef.Main>;
 		subjectBlobCids: (string)[];
@@ -1723,6 +1727,7 @@ export declare namespace ComAtprotoAdminDefs {
 			| ModEventMute
 			| ModEventEmail
 			| ModEventResolveAppeal
+			| ModEventDivert
 		>;
 		subject: Brand.Union<RepoView | RepoViewNotFound | RecordView | RecordViewNotFound>;
 		subjectBlobs: (BlobView)[];
@@ -1971,6 +1976,11 @@ export declare namespace ComAtprotoAdminDefs {
 		/** Tags to be removed to the subject. Ignores a tag If it doesn't exist, won't be duplicated. */
 		remove: (string)[];
 		/** Additional comment about added/removed tags. */
+		comment?: string;
+	}
+	/** Divert a record's blobs to a 3rd party service for further scanning/tagging */
+	interface ModEventDivert {
+		[Brand.Type]?: 'com.atproto.admin.defs#modEventDivert';
 		comment?: string;
 	}
 	interface CommunicationTemplateView {
