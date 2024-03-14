@@ -218,12 +218,12 @@ export declare namespace AppBskyActorDefs {
 		/** A list of URIs of posts the account owner has hidden. */
 		items: (At.Uri)[];
 	}
-	interface ModsPref {
-		[Brand.Type]?: 'app.bsky.actor.defs#modsPref';
-		mods: (ModPrefItem)[];
+	interface LabelersPref {
+		[Brand.Type]?: 'app.bsky.actor.defs#labelersPref';
+		labelers: (LabelerPrefItem)[];
 	}
-	interface ModPrefItem {
-		[Brand.Type]?: 'app.bsky.actor.defs#modPrefItem';
+	interface LabelerPrefItem {
+		[Brand.Type]?: 'app.bsky.actor.defs#labelerPrefItem';
 		did: At.DID;
 	}
 }
@@ -1982,6 +1982,13 @@ export declare namespace ComAtprotoLabelDefs {
 		severity: 'inform' | 'alert' | 'none' | (string & {});
 		/** What should this label hide in the UI, if applied? 'content' hides all of the target; 'media' hides the images/video/audio; 'none' hides nothing. */
 		blurs: 'content' | 'media' | 'none' | (string & {});
+		/**
+		 * The default setting for this label.
+		 * @default "warn"
+		 */
+		defaultSetting?: 'ignore' | 'warn' | 'hide' | (string & {});
+		/** Does the user need to have adult content enabled in order to configure this label? */
+		adultOnly?: boolean;
 		locales: (LabelValueDefinitionStrings)[];
 	}
 	/** Strings which describe the label in the UI, localized into a specific language. */
@@ -2566,12 +2573,18 @@ export declare namespace ComAtprotoServerDescribeServer {
 		availableUserDomains: (string)[];
 		/** URLs of service policy documents. */
 		links?: Links;
+		/** Contact information */
+		contact?: Contact;
 		did: At.DID;
 	}
 	interface Links {
 		[Brand.Type]?: 'com.atproto.server.describeServer#links';
 		privacyPolicy?: string;
 		termsOfService?: string;
+	}
+	interface Contact {
+		[Brand.Type]?: 'com.atproto.server.describeServer#contact';
+		email?: string;
 	}
 }
 
