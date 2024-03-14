@@ -303,6 +303,12 @@ export const fetchHandler: XRPCFetch = async (
 	};
 };
 
+/**
+ * Check if provided value is an error object
+ * @param value Response value
+ * @param names If provided, also checks if the error name matches what you expect
+ * @returns A boolean on the check
+ */
 export const isErrorResponse = (value: any, names?: string[]): value is ErrorResponseBody => {
 	if (typeof value !== 'object' || !value) {
 		return false;
