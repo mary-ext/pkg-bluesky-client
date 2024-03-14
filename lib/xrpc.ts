@@ -1,9 +1,11 @@
+// deno-lint-ignore-file ban-types no-explicit-any
+
 /**
  * @module
  * Handles the actual XRPC client functionalities.
  */
 
-// deno-lint-ignore-file no-explicit-any ban-types
+import { At } from './lexicons.ts';
 
 export type Headers = Record<string, string>;
 
@@ -187,6 +189,56 @@ export class XRPC<Queries, Procedures> {
 			throw new XRPCError(status, { headers });
 		}
 	}
+}
+
+/**
+ * Clones an XRPC instance
+ * @param rpc Base instance
+ * @returns The cloned instance
+ */
+export const clone = <Queries, Procedures>(
+	rpc: XRPC<Queries, Procedures>,
+): XRPC<Queries, Procedures> => {
+	const cloned = new XRPC({ service: rpc.service });
+	cloned.fetch = rpc.fetch;
+
+	return cloned;
+};
+
+/**
+ * Clones an existing XRPC instance, with a proxy on top.
+ * @param rpc Base instance
+ * @param opts Proxying options
+ * @returns Cloned instance with a proxy added
+ */
+export const withProxy = <Queries, Procedures>(
+	rpc: XRPC<Queries, Procedures>,
+	opts: ProxyOptions,
+): XRPC<Queries, Procedures> => {
+	const cloned = clone(rpc);
+
+	cloned.hook((next) => (request) => {
+		return next({
+			...request,
+			headers: {
+				...request.headers,
+				'atproto-proxy': `${opts.service}#${opts.type}`,
+			},
+		});
+	});
+
+	return cloned;
+};
+
+/** Supported endpoint proxies */
+export type ProxyType = 'atproto_labeler';
+
+/** Options for proxying a request */
+export interface ProxyOptions {
+	/** Service it should proxy requests to */
+	service: At.DID;
+	/** The endpoint to connect */
+	type: ProxyType | (string & {});
 }
 
 /** Default fetch handler */
