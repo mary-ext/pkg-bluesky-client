@@ -129,8 +129,8 @@ type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 export class XRPC<Queries, Procedures> {
 	/** The service it should connect to */
 	service: string;
-
-	#fetch: XRPCFetch = fetchHandler;
+	/** XRPC fetch handler */
+	fetch: XRPCFetch = fetchHandler;
 
 	constructor(options: XRPCOptions) {
 		this.service = options.service;
@@ -142,7 +142,7 @@ export class XRPC<Queries, Procedures> {
 	 * @param fn Hook function
 	 */
 	hook(fn: XRPCHook) {
-		this.#fetch = fn(this.#fetch);
+		this.fetch = fn(this.fetch);
 	}
 
 	/**
@@ -172,7 +172,7 @@ export class XRPC<Queries, Procedures> {
 	}
 
 	async #call(request: PartialBy<Omit<XRPCRequest, 'service'>, 'headers' | 'params'>): Promise<XRPCResponse> {
-		const { status, headers, body } = await this.#fetch({
+		const { status, headers, body } = await this.fetch({
 			...request,
 			service: this.service,
 			headers: request.headers === undefined ? {} : request.headers,
