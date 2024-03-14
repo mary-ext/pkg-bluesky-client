@@ -71,3 +71,22 @@ const response = await rpc.get('app.bsky.feed.getActorLikes', {
 
 response.data; // -> Array(5) [...]
 ```
+
+### 0.5.6
+
+The ability to clone and subsequently add a proxy middleware has been added, available within the `/xrpc`
+submodule.
+
+```ts
+const rpc = new BskyXRPC({ service: 'https://bsky.social' });
+const proxied = withProxy(rpc, { service: 'did:web:bsky.social', type: 'atproto_labeler' });
+
+// Make reports
+await proxied.call('com.atproto.moderation.createReport', {
+	data: {
+		reasonType: 'com.atproto.moderation.defs#reasonViolation',
+		reason: `Awful behavior`,
+		subject: { did: 'did:web:bob.com' },
+	},
+});
+```
