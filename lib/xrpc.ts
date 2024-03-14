@@ -189,7 +189,7 @@ export class XRPC<Queries, Procedures> {
 	}
 }
 
-/** Fetch handler */
+/** Default fetch handler */
 export const fetchHandler: XRPCFetch = async (
 	{ service, type, nsid, headers, params, encoding, data: input, signal },
 ) => {
