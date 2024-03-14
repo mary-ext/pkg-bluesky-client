@@ -250,30 +250,38 @@ export interface AuthLoginOptions {
 
 /** Options for constructing a moderation middleware */
 export interface BskyModOptions {
-	labelers?: At.DID[];
-	authorities?: At.DID[];
+	/** List of moderation services to use */
+	labelers?: ModerationService[];
 }
 
 /** Moderation middleware, unstable. */
 export class BskyMod {
-	labelers: At.DID[];
-	authorities: At.DID[];
+	/** List of moderation services that gets forwarded as a header */
+	labelers: ModerationService[];
 
-	constructor(rpc: BskyXRPC, { labelers = [], authorities = [] }: BskyModOptions = {}) {
+	constructor(rpc: BskyXRPC, { labelers = [] }: BskyModOptions = {}) {
 		this.labelers = labelers;
-		this.authorities = authorities;
 
 		rpc.hook((next) => (request) => {
 			return next({
 				...request,
 				headers: {
 					...request.headers,
-					'atproto-mod-authorities': this.authorities.join(','),
-					'atproto-labelers': this.labelers.join(','),
+					'atproto-accept-labeler': this.labelers
+						.map((labeler) => labeler.did + (labeler.redact ? `;redact` : ``))
+						.join(','),
 				},
 			});
 		});
 	}
+}
+
+/** Interface detailing what moderator service to use and how it should be used. */
+export interface ModerationService {
+	/** Moderator service to use */
+	did: At.DID;
+	/** Whether it should apply takedowns made by this service. */
+	redact?: boolean;
 }
 
 /** XRPC instance with Bluesky lexicons */
