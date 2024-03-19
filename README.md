@@ -10,33 +10,26 @@ Lightweight API client for Bluesky/AT Protocol (atproto).
 
 ## Why?
 
-The official `@atproto/api` library is massive, weighing in at [583 KB](https://pkg-size.dev/@atproto/api)
+The official `@atproto/api` library is massive, weighing in at [583 KB](https://pkg-size.dev/@atproto/api).
 
 - The library relies on automatically generated classes and functions for representing the nature of RPC and
   namespaces, which can't be treeshaken at all if you only request to one or two endpoints.
-- The library depends on `zod` and `graphemer`, and as the library is shipped in CJS format, it's very
-  unlikely that treeshaking will be able to get them all off, resulting in a code bloat that's especially
+- The library depends on `zod` and `graphemer`, and as the library is shipped in CJS format it is unlikely
+  that the treeshaking will be able to get them all off, resulting in a code bloat that's especially
   noticeable if you don't also rely on said functionality or dependencies.
 
-Which leads to this lightweight library, where it makes the following tradeoffs:
+Which leads to this alternative library, where it makes the following tradeoffs:
 
+- The client does not attempt to validate if the responses are valid, or provide the means to check if what
+  you're sending is correct during runtime. **Proceed at your own risk**.
+- IPLD and blob types are represented _as-is_.
+  - CID links are not converted to a CID instance, and you'd need to rely on `multiformats` or
+    `@mary/atproto-cid` if you need to parse them.
+  - Byte arrays are converted to `unknown` for the time being as queries and procedures currently does not
+    make use of them.
+  - Blobs are not turned into a BlobRef instance.
 - Additional APIs for handling rich text or moderation are not included, but there are some alternatives
   provided as examples in the repository.
-- TypeScript type definitions are provided, but the client does not validate if the responses are correct.
-  **Proceed at your own risk.**
-- Queries and properties are not accessed via property access, you'd have to type the NSID as a string.
-
-```js
-// ❎️
-agent.app.bsky.actor.getProfile({ actor: 'did:plc:ragtjsm2j2vknwkz3zp4oxrd' });
-
-// ✅️
-rpc.get('app.bsky.actor.getProfile', {
-	params: {
-		actor: 'did:plc:ragtjsm2j2vknwkz3zp4oxrd',
-	},
-});
-```
 
 The result is a very small query client that you can extend easily:
 
