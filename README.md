@@ -18,7 +18,7 @@ The official `@atproto/api` library is massive, weighing in at [583 KB](https://
   that the treeshaking will be able to get them all off, resulting in a code bloat that's especially
   noticeable if you don't also rely on said functionality or dependencies.
 
-Which leads to this alternative library, where it makes the following tradeoffs:
+Which leads to this alternative library, where it makes the following tradeoffs for its size:
 
 - The client does not attempt to validate if the responses are valid, or provide the means to check if what
   you're sending is correct during runtime. **Proceed at your own risk**.
@@ -37,38 +37,6 @@ The result is a very small query client that you can extend easily:
 - `BskyXRPC` alone: 1.7 KB
 
 ## Usage
-
-### Doing an unauthenticated request...
-
-```ts
-const rpc = new BskyXRPC({ service: 'https://public.api.bsky.app' });
-
-const profile = await rpc.get('app.bsky.actor.getProfile', {
-	params: {
-		actor: 'did:plc:ragtjsm2j2vknwkz3zp4oxrd',
-	},
-});
-
-console.log(profile.data); // -> { handle: 'pfrazee.com', ... }
-```
-
-### Doing an authenticated request...
-
-```ts
-const rpc = new BskyXRPC({ service: 'https://bsky.app' });
-const auth = new BskyAuth(rpc);
-
-await auth.login({ identifier: '...', password: '...' });
-
-const likes = await rpc.get('app.bsky.feed.getActorLikes', {
-	params: {
-		actor: auth.session.did,
-		limit: 5,
-	},
-});
-
-console.log(likes.data); // -> Array(5) [...]
-```
 
 ### Fiddling with AT Protocol lexicons...
 
@@ -94,5 +62,56 @@ const facet: Facet = {
 };
 ```
 
-Objects are branded as unions are discriminated by the `$type` field, this means that the typings are slightly
-stricter than usual (can't use `ProfileView` in functions that only accepts `ProfileViewBasic`).
+Unions in AT Protocol are done by discriminating the object's `$type` field, where the field only needs to
+exist if it's under a union. To make this possible, objects are branded with a (nonexistent) unique symbol.
+Note that object typings are slightly stricter than usual because of this (can't pass
+`AppBskyActorDefs.ProfileView` in functions that expects `ProfileViewBasic`).
+
+### Doing an unauthenticated request...
+
+```ts
+const rpc = new BskyXRPC({ service: 'https://public.api.bsky.app' });
+
+const profile = await rpc.get('app.bsky.actor.getProfile', {
+	params: {
+		actor: 'did:plc:ragtjsm2j2vknwkz3zp4oxrd',
+	},
+});
+
+console.log(profile.data); // -> { handle: 'pfrazee.com', ... }
+```
+
+### Doing an authenticated request...
+
+```ts
+const rpc = new BskyXRPC({ service: 'https://bsky.social' });
+const auth = new BskyAuth(rpc);
+
+await auth.login({ identifier: '...', password: '...' });
+
+const likes = await rpc.get('app.bsky.feed.getActorLikes', {
+	params: {
+		actor: auth.session.did,
+		limit: 5,
+	},
+});
+
+console.log(likes.data); // -> Array(5) [...]
+```
+
+### Creating a post...
+
+```ts
+const record: AppBskyFeedPost.Record = {
+	createdAt: new Date().toISOString(),
+	text: `Hello world!`,
+};
+
+await rpc.call('com.atproto.repo.createRecord', {
+	data: {
+		repo: agent.session.did,
+		collection: 'app.bsky.feed.post',
+		record: record,
+	},
+});
+```
