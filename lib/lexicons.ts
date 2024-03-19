@@ -59,6 +59,7 @@ export declare namespace AppBskyActorDefs {
 		 */
 		displayName?: string;
 		avatar?: string;
+		associated?: ProfileAssociated;
 		viewer?: ViewerState;
 		labels?: (ComAtprotoLabelDefs.Label)[];
 	}
@@ -77,6 +78,7 @@ export declare namespace AppBskyActorDefs {
 		 */
 		description?: string;
 		avatar?: string;
+		associated?: ProfileAssociated;
 		indexedAt?: string;
 		viewer?: ViewerState;
 		labels?: (ComAtprotoLabelDefs.Label)[];
