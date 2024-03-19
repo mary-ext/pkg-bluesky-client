@@ -1,4 +1,4 @@
-# bluesky-client
+# @mary/bluesky-client
 
 [View on JSR](https://jsr.io/@mary/bluesky-client)\
 [Source code](https://codeberg.org/mary-ext/pkg-bluesky-client)
@@ -23,8 +23,8 @@ Which leads to this alternative library, where it makes the following tradeoffs:
 - The client does not attempt to validate if the responses are valid, or provide the means to check if what
   you're sending is correct during runtime. **Proceed at your own risk**.
 - IPLD and blob types are represented _as-is_.
-  - CID links are not converted to a CID instance, and you'd need to rely on `multiformats` or
-    `@mary/atproto-cid` if you need to parse them.
+  - CID links are not converted to a CID instance, and you'd need to rely on
+    [`@mary/atproto-cid`](https://jsr.io/@mary/atproto-cid) or `multiformats` if you need to parse them.
   - Byte arrays are converted to `unknown` for the time being as queries and procedures currently does not
     make use of them.
   - Blobs are not turned into a BlobRef instance.
