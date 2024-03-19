@@ -10,16 +10,18 @@ Lightweight API client for Bluesky/AT Protocol (atproto).
 
 ## Why?
 
-The official `@atproto/api` library is big!
-<a href="https://pkg-size.dev/@atproto/api"><img src="https://pkg-size.dev/badge/bundle/461666" title="Bundle size for @atproto/api"></a>
+The official `@atproto/api` library is massive, weighing in at [583 KB](https://pkg-size.dev/@atproto/api)
 
 - The library relies on automatically generated classes and functions for representing the nature of RPC and
   namespaces, which can't be treeshaken at all if you only request to one or two endpoints.
-- The library unnecessarily bundles dependencies like `graphemer` and `zod`, resulting on code duplication if
-  you also use them in your projects, or bloat if you don't need to rely on said functionality at all.
+- The library depends on `zod` and `graphemer`, and as the library is shipped in CJS format, it's very
+  unlikely that treeshaking will be able to get them all off, resulting in a code bloat that's especially
+  noticeable if you don't also rely on said functionality or dependencies.
 
-Which leads to this lightweight library, which makes the following tradeoffs:
+Which leads to this lightweight library, where it makes the following tradeoffs:
 
+- Additional APIs for handling rich text or moderation are not included, but there are some alternatives
+  provided as examples in the repository.
 - TypeScript type definitions are provided, but the client does not validate if the responses are correct.
   **Proceed at your own risk.**
 - Queries and properties are not accessed via property access, you'd have to type the NSID as a string.
@@ -36,8 +38,10 @@ rpc.get('app.bsky.actor.getProfile', {
 });
 ```
 
-Additional APIs like RichText and Moderation are also not included, but some alternatives are provided as
-examples in the repository.
+The result is a very small query client that you can extend easily:
+
+- The entire package: [4.6 KB](https://pkg-size.dev/@externdefs%2Fbluesky-client)
+- `BskyXRPC` alone: 1.7 KB
 
 ## Usage
 
