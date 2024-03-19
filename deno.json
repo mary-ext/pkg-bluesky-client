@@ -1,6 +1,6 @@
 {
 	"name": "@mary/bluesky-client",
-	"version": "0.5.6",
+	"version": "0.5.7",
 	"exports": {
 		".": "./lib/mod.ts",
 		"./xrpc": "./lib/xrpc.ts",
