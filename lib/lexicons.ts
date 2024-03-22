@@ -2830,7 +2830,10 @@ export declare namespace ComAtprotoSyncGetRecord {
 		collection: string;
 		/** Record Key */
 		rkey: string;
-		/** An optional past commit CID. */
+		/**
+		 * DEPRECATED: referenced a repo commit by CID, and retrieved record as of that commit
+		 * @deprecated
+		 */
 		commit?: At.CID;
 	}
 	type Input = undefined;
