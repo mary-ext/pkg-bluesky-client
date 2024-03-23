@@ -2067,7 +2067,11 @@ export declare namespace ComAtprotoModerationCreateReport {
 	interface Input {
 		/** Indicates the broad category of violation the report is for. */
 		reasonType: ComAtprotoModerationDefs.ReasonType;
-		/** Additional context about the content and violation. */
+		/**
+		 * Additional context about the content and violation. \
+		 * Maximum string length: 20000 \
+		 * Maximum grapheme length: 2000
+		 */
 		reason?: string;
 		subject: Brand.Union<ComAtprotoAdminDefs.RepoRef | ComAtprotoRepoStrongRef.Main>;
 	}
