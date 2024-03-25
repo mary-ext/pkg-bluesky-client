@@ -1,8 +1,5 @@
 # @mary/bluesky-client
 
-[View on JSR](https://jsr.io/@mary/bluesky-client)\
-[Source code](https://codeberg.org/mary-ext/pkg-bluesky-client)
-
 Lightweight API client for Bluesky/AT Protocol (atproto).
 
 > [!IMPORTANT] This is an ESM-only library, you need to configure your TypeScript correctly in order to
